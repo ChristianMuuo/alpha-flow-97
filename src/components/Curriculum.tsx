@@ -1,103 +1,127 @@
 import { useState } from "react";
-import { ChevronDown, Clock, Video, FileText, Download } from "lucide-react";
+import { ChevronDown, Clock, Video, FileText, Download, Cpu } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const modules = [
   {
     week: "Week 1",
-    title: "The Foundation: Market DNA",
-    duration: "4.5 hours",
+    title: "The Obsidian Foundation",
+    duration: "5 hours",
     lessons: [
-      "Why 95% of traders fail (and how you'll be different)",
-      "Market microstructure: How forex actually works",
-      "Institutional players: Banks, hedge funds, and their footprints",
-      "The only 3 session windows that matter",
+      "Why 95% of traders fail (and how we engineer your success)",
+      "Market microstructure: How forex actually works at the institutional level",
+      "The Obsidian AI Onboarding: Setting up your personal trading co-pilot",
+      "The 4 session windows that print money consistently",
     ],
-    transformation: "You'll understand how money really moves in forex — no more guessing.",
+    transformation: "You'll understand how smart money moves — and have your AI co-pilot configured.",
   },
   {
     week: "Week 2",
-    title: "Smart Money Concepts Decoded",
-    duration: "6 hours",
+    title: "Smart Money Concepts 2.0",
+    duration: "6.5 hours",
     lessons: [
-      "Order blocks, breaker blocks & mitigation zones",
-      "Liquidity pools: Where stops get hunted",
-      "Fair value gaps and imbalances",
-      "Market structure shifts vs. breaks of structure",
+      "Order blocks, breaker blocks & mitigation zones (AI-enhanced detection)",
+      "Liquidity engineering: Where stops get hunted and why",
+      "Fair value gaps and institutional imbalances",
+      "Market structure shifts vs. genuine reversals",
     ],
-    transformation: "You'll see the market through institutional eyes for the first time.",
+    transformation: "You'll see the market through institutional eyes with AI highlighting key levels.",
   },
   {
     week: "Week 3",
-    title: "Pure Price Action Mastery",
-    duration: "5.5 hours",
+    title: "Order Flow & Volume Mastery",
+    duration: "6 hours",
     lessons: [
-      "Candlestick patterns that actually work (backed by data)",
-      "Multi-timeframe confluence systems",
-      "Support & resistance zones that institutions respect",
-      "Trend identification without lagging indicators",
+      "Real-time order flow reading with Bookmap integration",
+      "Volume profile: POC, value areas, and virgin levels decoded",
+      "Footprint charts for surgical entry precision",
+      "COT data analysis and smart positioning",
     ],
-    transformation: "Your charts become crystal clear. No more analysis paralysis.",
+    transformation: "You'll know where the big players are positioned before the move happens.",
   },
   {
     week: "Week 4",
-    title: "Order Flow & Volume Profile",
-    duration: "5 hours",
+    title: "Price Action Supremacy",
+    duration: "5.5 hours",
     lessons: [
-      "Reading order flow in real-time",
-      "Volume profile: POC, value areas, and virgin levels",
-      "Footprint charts for precision entries",
-      "COT data and positioning analysis",
+      "Candlestick patterns that actually work (backed by 10-year data)",
+      "Multi-timeframe confluence systems",
+      "Support & resistance zones institutions respect",
+      "Trend identification without lagging indicators",
     ],
-    transformation: "You'll know where the big players are positioned before they move.",
+    transformation: "Your charts become crystal clear. Analysis paralysis disappears.",
   },
   {
     week: "Week 5",
-    title: "The A+ Setup Playbook",
+    title: "The A+ Setup Arsenal",
     duration: "7 hours",
     lessons: [
-      "The 7 setups with 60%+ historical win rates",
-      "Entry triggers, stop placement & target logic",
-      "Session-specific strategies (London, NY, Asia)",
-      "Building your personal setup checklist",
+      "The 12 setups with 65%+ historical win rates",
+      "Session-specific strategies (London Open, NY Killzone, Asia Range)",
+      "AI pattern recognition: Automating setup alerts",
+      "Building your personal A+ checklist with scoring system",
     ],
-    transformation: "You'll have a repeatable system with a proven statistical edge.",
+    transformation: "You'll have a repeatable system with mathematical edge — AI-verified.",
   },
   {
     week: "Week 6",
-    title: "Risk Management Like a Pro",
-    duration: "4 hours",
+    title: "Prop Firm Risk Engineering",
+    duration: "5 hours",
     lessons: [
-      "Position sizing formulas used by prop firms",
-      "The 0.5-1% rule and why it's non-negotiable",
-      "Correlation risk and portfolio heat",
-      "Drawdown recovery protocols",
+      "Position sizing formulas used by $1M+ funded accounts",
+      "The 0.5% rule and drawdown recovery protocols",
+      "Correlation risk and portfolio heat management",
+      "Challenge-specific risk parameters (FTMO, The5ers, Topstep)",
     ],
-    transformation: "You'll never blow another account. Guaranteed.",
+    transformation: "You'll never blow another account. Your risk is institutionally calibrated.",
   },
   {
     week: "Week 7",
-    title: "Trading Psychology Deep Dive",
-    duration: "5 hours",
+    title: "Trading Psychology Lab",
+    duration: "5.5 hours",
     lessons: [
-      "The neuroscience of fear and greed",
-      "Building unshakeable trading discipline",
-      "Pre-trade routines and mindset rituals",
-      "Handling losses, drawdowns, and FOMO",
+      "The neuroscience of fear, greed, and FOMO",
+      "AI behavioral analysis: Identifying your patterns",
+      "Pre-trade routines and mindset rituals of elite traders",
+      "Handling losses, drawdowns, and winning streaks",
     ],
-    transformation: "Your emotions become an asset, not a liability.",
+    transformation: "Your psychology becomes an asset. The AI coach keeps you accountable.",
   },
   {
     week: "Week 8",
-    title: "The Funded Trader Fast-Track",
+    title: "Advanced Market Analysis",
     duration: "6 hours",
     lessons: [
-      "Prop firm evaluation rules decoded",
-      "The exact 30-day challenge strategy",
-      "Risk parameters for each major prop firm",
-      "What to do after you're funded",
+      "Intermarket analysis: DXY, bonds, and risk correlations",
+      "News trading with institutional timing",
+      "Seasonality patterns and calendar effects",
+      "Building custom AI market scanners",
     ],
-    transformation: "You'll be ready to pass your first prop challenge with confidence.",
+    transformation: "You'll read markets like a hedge fund analyst with AI-powered dashboards.",
+  },
+  {
+    week: "Week 9",
+    title: "The Prop Firm Gauntlet",
+    duration: "7 hours",
+    lessons: [
+      "Prop firm evaluation rules decoded (all major firms)",
+      "The exact 30-day challenge passing strategy",
+      "Simulated challenge environment with real spreads",
+      "Common pitfalls and how to avoid them",
+    ],
+    transformation: "You'll be ready to crush any prop firm challenge with confidence.",
+  },
+  {
+    week: "Week 10",
+    title: "Funded Trader Operations",
+    duration: "5.5 hours",
+    lessons: [
+      "Managing a funded account: Scaling and compounding",
+      "Tax optimization for trading income",
+      "Building multiple funded accounts",
+      "Long-term wealth building as a funded trader",
+    ],
+    transformation: "You'll operate like a professional trader managing real capital.",
   },
 ];
 
@@ -113,14 +137,14 @@ const Curriculum = () => {
         <div className="max-w-4xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16">
-            <p className="section-label mb-4">Full Curriculum</p>
+            <p className="section-label mb-4">Elite Curriculum</p>
             <h2 className="text-3xl md:text-5xl lg:text-6xl font-black mb-6">
-              <span className="text-foreground">8 Weeks to</span>
+              <span className="text-foreground">10 Weeks to</span>
               <br />
-              <span className="gold-text">Trading Mastery</span>
+              <span className="gold-text">Institutional Mastery</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              43+ hours of institutional-grade training. Every lesson designed to build on the last.
+              59+ hours of AI-enhanced training. 12 elite modules. Every lesson designed to transform you into a funded professional.
             </p>
           </div>
 
@@ -142,7 +166,7 @@ const Curriculum = () => {
                 >
                   <div className="flex items-center gap-4">
                     <span className="flex-shrink-0 w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center font-mono text-sm font-bold text-primary">
-                      {module.week.split(" ")[1]}
+                      {(index + 1).toString().padStart(2, '0')}
                     </span>
                     <div>
                       <p className="text-xs text-muted-foreground mb-1">{module.week}</p>
@@ -193,18 +217,22 @@ const Curriculum = () => {
           {/* Extras */}
           <div className="mt-12 p-8 rounded-2xl bg-card/50 border border-border/50">
             <h3 className="text-xl font-bold text-center mb-6">Also Included:</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-secondary/50">
+                <Cpu className="w-5 h-5 text-primary" />
+                <span className="text-sm text-foreground">AI Co-Pilot Access</span>
+              </div>
               <div className="flex items-center gap-3 p-4 rounded-xl bg-secondary/50">
                 <FileText className="w-5 h-5 text-primary" />
                 <span className="text-sm text-foreground">Notion Strategy Vault</span>
               </div>
               <div className="flex items-center gap-3 p-4 rounded-xl bg-secondary/50">
                 <Download className="w-5 h-5 text-primary" />
-                <span className="text-sm text-foreground">Trade Journal Templates</span>
+                <span className="text-sm text-foreground">AI Trade Journal</span>
               </div>
               <div className="flex items-center gap-3 p-4 rounded-xl bg-secondary/50">
                 <Video className="w-5 h-5 text-primary" />
-                <span className="text-sm text-foreground">Weekly Live Sessions</span>
+                <span className="text-sm text-foreground">Daily Desk Broadcasts</span>
               </div>
             </div>
           </div>
