@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight, Clock, Users } from "lucide-react";
 
 const FinalCTA = () => {
   return (
@@ -12,31 +12,37 @@ const FinalCTA = () => {
         <div className="max-w-4xl mx-auto text-center">
           {/* Urgency */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-loss/10 border border-loss/20 mb-8">
-            <Clock className="w-4 h-4 text-loss" />
-            <span className="text-sm font-semibold text-loss">Only 127 spots remaining for Q1 2025</span>
+            <Users className="w-4 h-4 text-loss" />
+            <span className="text-sm font-semibold text-loss">Only 1,000 Lifetime Members — Ever</span>
           </div>
 
           {/* Headline */}
           <h2 className="text-3xl md:text-5xl lg:text-6xl font-black mb-6">
-            <span className="text-foreground">Stop Losing Money.</span>
+            <span className="text-foreground">The Market Doesn't Wait.</span>
             <br />
-            <span className="gold-text">Start Trading Like a Pro.</span>
+            <span className="gold-text">Neither Should You.</span>
           </h2>
 
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-            In 8 weeks, you'll have the skills, the system, and the confidence to trade profitably — 
-            or get your money back plus $100. There's literally zero risk.
+            In 10 weeks, you'll have the AI-powered edge, the institutional skills, and the confidence to become a funded professional — 
+            or get your money back plus $500. <span className="text-foreground font-semibold">Zero risk. Infinite upside.</span>
           </p>
 
           {/* CTA */}
           <Button variant="hero" size="xl" className="group">
-            Enroll Now — Transform Your Trading
+            Apply for Obsidian Desk
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
 
           <p className="mt-6 text-sm text-muted-foreground">
-            $1,997 one-time or 3x $797 • 60-day guarantee • Instant access
+            $2,997 one-time or 3x $1,197 • 90-day guarantee • Instant access
           </p>
+
+          {/* Final Trust */}
+          <div className="mt-12 flex items-center justify-center gap-2 text-muted-foreground">
+            <Clock className="w-4 h-4" />
+            <span className="text-sm">Average time to funded account: 47 days</span>
+          </div>
         </div>
       </div>
     </section>

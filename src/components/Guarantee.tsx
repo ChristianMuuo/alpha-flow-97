@@ -1,4 +1,4 @@
-import { Shield, CheckCircle } from "lucide-react";
+import { Shield, CheckCircle, DollarSign } from "lucide-react";
 
 const Guarantee = () => {
   return (
@@ -17,34 +17,35 @@ const Guarantee = () => {
               {/* Content */}
               <div className="text-center md:text-left">
                 <h2 className="text-2xl md:text-4xl font-black mb-4">
-                  <span className="text-foreground">60-Day</span>{" "}
-                  <span className="gold-text">"Profit or Refund"</span>{" "}
+                  <span className="text-foreground">90-Day</span>{" "}
+                  <span className="gold-text">"Funded or Free"</span>{" "}
                   <span className="text-foreground">Guarantee</span>
                 </h2>
                 
                 <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-                  Go through the entire program. Implement the strategies. Trade for 60 days. 
-                  If you don't see measurable improvement in your trading — or you're not on track to become funded — 
-                  we'll refund 100% of your investment <span className="text-foreground font-semibold">plus give you $100 cash</span> for wasting your time.
+                  Complete the entire Obsidian Desk program. Follow the system for 90 days. 
+                  If you don't pass a prop firm challenge OR see measurable improvement in your trading — 
+                  we'll refund 100% of your investment <span className="text-foreground font-semibold">plus give you $500 cash</span> for your time.
                 </p>
 
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
                     <CheckCircle className="w-5 h-5 text-profit flex-shrink-0" />
-                    <span className="text-foreground">Full 60 days to test the entire system</span>
+                    <span className="text-foreground">Full 90 days to test the complete AI-powered system</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <CheckCircle className="w-5 h-5 text-profit flex-shrink-0" />
-                    <span className="text-foreground">100% refund if you're not satisfied</span>
+                    <span className="text-foreground">100% refund if you're not funded or profitable</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-profit flex-shrink-0" />
-                    <span className="text-foreground">Plus $100 cash just for trying</span>
+                    <DollarSign className="w-5 h-5 text-profit flex-shrink-0" />
+                    <span className="text-foreground">Plus $500 cash for your time if we fail you</span>
                   </div>
                 </div>
 
                 <p className="mt-6 text-sm text-muted-foreground italic">
-                  We can offer this because we know the system works. We've seen it transform over 847 traders.
+                  We can offer this because we've engineered success. 1,247+ traders funded and counting. 
+                  The AI doesn't lie — it just works.
                 </p>
               </div>
             </div>
