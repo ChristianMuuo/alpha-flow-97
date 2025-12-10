@@ -18,6 +18,9 @@ const buttonVariants = cva(
         gold: "bg-gradient-to-r from-primary to-accent text-primary-foreground font-bold shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98]",
         hero: "bg-gradient-to-r from-primary to-accent text-primary-foreground font-bold text-lg px-8 py-6 shadow-xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/50 hover:scale-[1.02] active:scale-[0.98]",
         outline_gold: "border-2 border-primary bg-transparent text-primary hover:bg-primary hover:text-primary-foreground",
+        emerald: "bg-emerald-500 text-white font-bold shadow-lg shadow-emerald-500/30 hover:bg-emerald-600 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.98]",
+        outline_emerald: "border-2 border-emerald-500 bg-transparent text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300",
+        glass: "bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 hover:border-white/30",
       },
       size: {
         default: "h-10 px-4 py-2",
