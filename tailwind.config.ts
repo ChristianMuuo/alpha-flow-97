@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Outfit', 'system-ui', 'sans-serif'],
-        display: ['Outfit', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Space Grotesk', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       colors: {
@@ -52,17 +52,22 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        emerald: {
+          DEFAULT: "hsl(var(--emerald))",
+          dark: "hsl(var(--emerald-dark))",
+          glow: "hsl(var(--emerald-glow))",
+        },
         gold: {
           DEFAULT: "hsl(var(--gold))",
           muted: "hsl(var(--gold-muted))",
-          glow: "hsl(var(--gold-glow))",
         },
-        obsidian: {
-          DEFAULT: "hsl(var(--obsidian))",
-          light: "hsl(var(--obsidian-light))",
+        cyan: {
+          DEFAULT: "hsl(var(--cyan))",
+          glow: "hsl(var(--cyan-glow))",
         },
         profit: "hsl(var(--profit))",
         loss: "hsl(var(--loss))",
+        warning: "hsl(var(--warning))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -104,6 +109,22 @@ export default {
           from: { backgroundPosition: "200% 0" },
           to: { backgroundPosition: "-200% 0" },
         },
+        "pulse-glow": {
+          "0%, 100%": { boxShadow: "0 0 20px hsl(160 100% 40% / 0.3)" },
+          "50%": { boxShadow: "0 0 40px hsl(160 100% 40% / 0.6)" },
+        },
+        "slide-right": {
+          from: { transform: "translateX(-100%)" },
+          to: { transform: "translateX(100%)" },
+        },
+        typewriter: {
+          from: { width: "0" },
+          to: { width: "100%" },
+        },
+        blink: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -112,11 +133,17 @@ export default {
         "slide-up": "slide-up 0.8s ease-out forwards",
         "scale-in": "scale-in 0.5s ease-out forwards",
         shimmer: "shimmer 8s ease-in-out infinite",
+        "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+        "slide-right": "slide-right 0.5s ease-out",
+        typewriter: "typewriter 2s steps(40) forwards",
+        blink: "blink 1s step-end infinite",
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gold-gradient': 'linear-gradient(135deg, hsl(42 100% 50%), hsl(35 100% 40%))',
-        'dark-gradient': 'linear-gradient(180deg, hsl(220 20% 6%), hsl(220 20% 4%))',
+        'emerald-gradient': 'linear-gradient(135deg, hsl(160 100% 40%), hsl(160 80% 25%))',
+        'gold-gradient': 'linear-gradient(135deg, hsl(45 100% 50%), hsl(35 100% 40%))',
+        'dark-gradient': 'linear-gradient(180deg, hsl(160 30% 3%), hsl(160 30% 2%))',
+        'glass-gradient': 'linear-gradient(145deg, hsl(160 25% 8% / 0.9), hsl(160 25% 5% / 0.9))',
       },
     },
   },

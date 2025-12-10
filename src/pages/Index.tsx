@@ -1,14 +1,10 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import Problem from "@/components/Problem";
-import Solution from "@/components/Solution";
-import AIFeatures from "@/components/AIFeatures";
-import Curriculum from "@/components/Curriculum";
-import Bonuses from "@/components/Bonuses";
-import Pricing from "@/components/Pricing";
-import Guarantee from "@/components/Guarantee";
-import FAQ from "@/components/FAQ";
-import FinalCTA from "@/components/FinalCTA";
+import FeaturedProducts from "@/components/FeaturedProducts";
+import Leaderboard from "@/components/Leaderboard";
+import Features from "@/components/Features";
+import CreatorCTA from "@/components/CreatorCTA";
+import TrustSection from "@/components/TrustSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -16,15 +12,11 @@ const Index = () => {
     <main className="min-h-screen bg-background">
       <Navbar />
       <Hero />
-      <Problem />
-      <Solution />
-      <AIFeatures />
-      <Curriculum />
-      <Bonuses />
-      <Pricing />
-      <Guarantee />
-      <FAQ />
-      <FinalCTA />
+      <FeaturedProducts />
+      <Leaderboard />
+      <Features />
+      <CreatorCTA />
+      <TrustSection />
       <Footer />
     </main>
   );
