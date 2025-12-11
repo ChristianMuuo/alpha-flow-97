@@ -14,7 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      orders: {
+        Row: {
+          created_at: string
+          download_url: string | null
+          id: string
+          paystack_reference: string | null
+          price: number
+          product_id: string
+          product_name: string
+          product_type: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          download_url?: string | null
+          id?: string
+          paystack_reference?: string | null
+          price: number
+          product_id: string
+          product_name: string
+          product_type: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          download_url?: string | null
+          id?: string
+          paystack_reference?: string | null
+          price?: number
+          product_id?: string
+          product_name?: string
+          product_type?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

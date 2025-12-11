@@ -12,6 +12,9 @@ import IndicatorsPage from "./pages/IndicatorsPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import CheckoutSuccessPage from "./pages/CheckoutSuccessPage";
+import AuthPage from "./pages/AuthPage";
+import DashboardPage from "./pages/DashboardPage";
+import MarketsPage from "./pages/MarketsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +28,9 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/markets" element={<MarketsPage />} />
             <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/signals" element={<SignalsPage />} />
             <Route path="/eas" element={<EAsPage />} />
