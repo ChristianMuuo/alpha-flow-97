@@ -1,1 +1,4 @@
 project_id = "rpcbwkihrdluaxivszty"
+
+[functions.paystack-checkout]
+verify_jwt = false
