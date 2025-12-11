@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Star, TrendingUp, Shield, Download, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -112,11 +113,16 @@ const categoryColors = {
 };
 
 const ProductCard = ({ product }: { product: Product }) => {
+  const productSlug = product.name.toLowerCase().replace(/\s+/g, '-');
+  
   return (
-    <div className={cn(
-      "product-card group",
-      product.featured && "ring-2 ring-primary/30"
-    )}>
+    <Link 
+      to={`/product/${productSlug}`}
+      className={cn(
+        "product-card group block",
+        product.featured && "ring-2 ring-primary/30"
+      )}
+    >
       {/* Featured Badge */}
       {product.featured && (
         <div className="absolute top-4 right-4 px-2 py-1 rounded-full bg-primary text-primary-foreground text-xs font-bold">
@@ -195,7 +201,7 @@ const ProductCard = ({ product }: { product: Product }) => {
           </Button>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

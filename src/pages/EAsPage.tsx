@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -245,9 +246,10 @@ export default function EAsPage() {
         <div className="container mx-auto">
           <div className={`grid gap-6 ${viewMode === "grid" ? "md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
             {eas.map((ea) => (
-              <div
+              <Link
                 key={ea.id}
-                className="group bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-6 hover:border-purple-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10"
+                to={`/product/${ea.name.toLowerCase().replace(/\s+/g, '-')}`}
+                className="group bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-6 hover:border-purple-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 block"
               >
                 {ea.featured && (
                   <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white mb-4">
@@ -334,7 +336,7 @@ export default function EAsPage() {
                   </span>
                   <span>{ea.trades.toLocaleString()} trades tested</span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
 

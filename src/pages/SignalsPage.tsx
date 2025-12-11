@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -228,9 +229,10 @@ export default function SignalsPage() {
         <div className="container mx-auto">
           <div className={`grid gap-6 ${viewMode === "grid" ? "md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
             {signals.map((signal) => (
-              <div
+              <Link
                 key={signal.id}
-                className="group bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-6 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10"
+                to={`/product/${signal.name.toLowerCase().replace(/\s+/g, '-')}`}
+                className="group bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-6 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10 block"
               >
                 {signal.featured && (
                   <Badge className="bg-gradient-to-r from-cyan-500 to-emerald-500 text-white mb-4">
@@ -297,7 +299,7 @@ export default function SignalsPage() {
                   </span>
                   <span>{signal.reviews} reviews</span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
 

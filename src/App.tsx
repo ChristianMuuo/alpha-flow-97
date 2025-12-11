@@ -8,6 +8,7 @@ import LeaderboardPage from "./pages/LeaderboardPage";
 import SignalsPage from "./pages/SignalsPage";
 import EAsPage from "./pages/EAsPage";
 import IndicatorsPage from "./pages/IndicatorsPage";
+import ProductDetailPage from "./pages/ProductDetailPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/signals" element={<SignalsPage />} />
           <Route path="/eas" element={<EAsPage />} />
           <Route path="/indicators" element={<IndicatorsPage />} />
+          <Route path="/product/:productId" element={<ProductDetailPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
