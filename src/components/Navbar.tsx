@@ -1,21 +1,25 @@
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
-import { Search, Menu, X, TrendingUp, Bot, BarChart3, BookOpen } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Search, Menu, X, TrendingUp, Bot, BarChart3, BookOpen, Globe, User, LogOut } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import CartDrawer from "./CartDrawer";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 const navLinks = [
+  { href: "/markets", label: "Markets", icon: Globe },
   { href: "/signals", label: "Signals", icon: TrendingUp },
   { href: "/eas", label: "EAs", icon: Bot },
   { href: "/indicators", label: "Indicators", icon: BarChart3 },
-  { href: "/courses", label: "Courses", icon: BookOpen },
   { href: "/leaderboard", label: "Leaderboard", icon: TrendingUp },
 ];
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,6 +28,23 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate('/');
+  };
 
   return (
     <>
@@ -77,12 +98,31 @@ const Navbar = () => {
               <CartDrawer />
 
               {/* CTAs */}
-              <Button variant="glass" size="sm" className="hidden sm:flex">
-                Sell on Apex
-              </Button>
-              <Button variant="emerald" size="sm">
-                Sign In
-              </Button>
+              {user ? (
+                <>
+                  <Link to="/dashboard">
+                    <Button variant="glass" size="sm" className="hidden sm:flex">
+                      <User className="w-4 h-4 mr-2" />
+                      Dashboard
+                    </Button>
+                  </Link>
+                  <Button variant="emerald" size="sm" onClick={handleSignOut}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="glass" size="sm" className="hidden sm:flex">
+                    Sell on Apex
+                  </Button>
+                  <Link to="/auth">
+                    <Button variant="emerald" size="sm">
+                      Sign In
+                    </Button>
+                  </Link>
+                </>
+              )}
 
               {/* Mobile Menu Toggle */}
               <button 
@@ -118,9 +158,31 @@ const Navbar = () => {
               </Link>
             ))}
             <div className="border-t border-border my-4" />
-            <Button variant="glass" className="w-full justify-center">
-              Sell on Apex
-            </Button>
+            {user ? (
+              <>
+                <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="glass" className="w-full justify-center mb-2">
+                    <User className="w-4 h-4 mr-2" />
+                    Dashboard
+                  </Button>
+                </Link>
+                <Button variant="emerald" className="w-full justify-center" onClick={() => { handleSignOut(); setMobileMenuOpen(false); }}>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="glass" className="w-full justify-center mb-2">
+                  Sell on Apex
+                </Button>
+                <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="emerald" className="w-full justify-center">
+                    Sign In
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
