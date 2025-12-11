@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
-import { Search, Menu, X, TrendingUp, Bot, BarChart3, BookOpen, Building2, Users } from "lucide-react";
+import { Search, Menu, X, TrendingUp, Bot, BarChart3, BookOpen } from "lucide-react";
+import CartDrawer from "./CartDrawer";
 
 const navLinks = [
   { href: "/signals", label: "Signals", icon: TrendingUp },
@@ -71,6 +72,9 @@ const Navbar = () => {
                   ⌘K
                 </kbd>
               </button>
+
+              {/* Cart */}
+              <CartDrawer />
 
               {/* CTAs */}
               <Button variant="glass" size="sm" className="hidden sm:flex">

@@ -1,14 +1,16 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useCart } from "@/contexts/CartContext";
+import { toast } from "sonner";
 import { 
   ShieldCheck, Star, TrendingUp, Download, Calculator, 
   BarChart3, Clock, Users, ArrowLeft, Play, ExternalLink,
-  CheckCircle2, AlertTriangle, Target, Zap, Copy
+  CheckCircle2, AlertTriangle, Target, Zap, Copy, ShoppingCart
 } from "lucide-react";
 
 // Mock product data - in real app this would come from API
@@ -118,10 +120,33 @@ const mockProducts: Record<string, {
 
 const ProductDetailPage = () => {
   const { productId } = useParams<{ productId: string }>();
+  const navigate = useNavigate();
+  const { addItem, isInCart } = useCart();
   const [balance, setBalance] = useState<string>("10000");
   const [activeTab, setActiveTab] = useState("overview");
   
   const product = productId ? mockProducts[productId] : null;
+  const inCart = product ? isInCart(product.id) : false;
+
+  const handleAddToCart = () => {
+    if (product) {
+      addItem({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        type: product.type,
+        creator: product.creator
+      });
+      toast.success(`${product.name} added to cart!`);
+    }
+  };
+
+  const handleBuyNow = () => {
+    if (product && !inCart) {
+      handleAddToCart();
+    }
+    navigate('/checkout');
+  };
   
   if (!product) {
     return (
@@ -367,13 +392,22 @@ const ProductDetailPage = () => {
               </div>
 
               <div className="space-y-3 mb-6">
-                <Button variant="emerald" className="w-full h-12 text-lg font-semibold">
+                <Button 
+                  variant="emerald" 
+                  className="w-full h-12 text-lg font-semibold"
+                  onClick={handleBuyNow}
+                >
                   <Download className="w-5 h-5 mr-2" />
                   Buy Now
                 </Button>
-                <Button variant="outline_emerald" className="w-full">
-                  <Play className="w-4 h-4 mr-2" />
-                  Watch Demo
+                <Button 
+                  variant="outline_emerald" 
+                  className="w-full"
+                  onClick={handleAddToCart}
+                  disabled={inCart}
+                >
+                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  {inCart ? 'Added to Cart' : 'Add to Cart'}
                 </Button>
               </div>
 
