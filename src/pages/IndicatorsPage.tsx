@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -269,9 +270,10 @@ export default function IndicatorsPage() {
         <div className="container mx-auto">
           <div className={`grid gap-6 ${viewMode === "grid" ? "md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid-cols-1"}`}>
             {indicators.map((indicator) => (
-              <div
+              <Link
                 key={indicator.id}
-                className="group bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-5 hover:border-amber-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+                to={`/product/${indicator.name.toLowerCase().replace(/\s+/g, '-')}`}
+                className="group bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-5 hover:border-amber-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10 block"
               >
                 {indicator.featured && (
                   <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white mb-3 text-xs">
@@ -341,7 +343,7 @@ export default function IndicatorsPage() {
                   </span>
                   <span>{indicator.reviews} reviews</span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
 
