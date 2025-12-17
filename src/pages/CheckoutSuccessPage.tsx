@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { Link, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
+import SEO from "@/components/SEO";
 import { CheckCircle2, Download, Mail, ArrowRight } from "lucide-react";
 
 const CheckoutSuccessPage = () => {
@@ -18,7 +18,7 @@ const CheckoutSuccessPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+      <SEO title="Payment Successful" description="Thank you for your purchase." />
 
       <div className="container py-32">
         <div className="max-w-lg mx-auto text-center">
@@ -76,8 +76,8 @@ const CheckoutSuccessPage = () => {
         </div>
       </div>
 
-      <Footer />
     </div>
+    </div >
   );
 };
 

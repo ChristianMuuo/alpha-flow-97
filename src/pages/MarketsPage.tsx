@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import Navbar from '@/components/Navbar';
 import TradingViewChart from '@/components/TradingViewChart';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, Globe, Clock } from 'lucide-react';
+import SEO from '@/components/SEO';
 
 const currencyPairs = {
   major: [
@@ -47,7 +47,10 @@ const MarketsPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+      <SEO
+        title="Live Markets"
+        description="Real-time forex and crypto market analysis with interactive charts."
+      />
       <div className="container mx-auto px-4 pt-32 pb-20">
         {/* Header */}
         <div className="text-center mb-12">
@@ -118,11 +121,10 @@ const MarketsPage = () => {
                       <button
                         key={pair.symbol}
                         onClick={() => setSelectedPair(pair)}
-                        className={`p-4 rounded-lg border transition-all text-left ${
-                          selectedPair.symbol === pair.symbol
+                        className={`p-4 rounded-lg border transition-all text-left ${selectedPair.symbol === pair.symbol
                             ? 'border-primary bg-primary/10'
                             : 'border-border/50 bg-background/50 hover:border-primary/50'
-                        }`}
+                          }`}
                       >
                         <div className="font-semibold">{pair.name}</div>
                         <div className="text-xs text-muted-foreground truncate">{pair.description}</div>

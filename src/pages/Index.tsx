@@ -1,4 +1,3 @@
-import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import ForexTicker from "@/components/ForexTicker";
 import FeaturedProducts from "@/components/FeaturedProducts";
@@ -6,17 +5,20 @@ import Leaderboard from "@/components/Leaderboard";
 import Features from "@/components/Features";
 import CreatorCTA from "@/components/CreatorCTA";
 import TrustSection from "@/components/TrustSection";
-import Footer from "@/components/Footer";
 import TradingViewChart from "@/components/TradingViewChart";
 import LiveMarketData from "@/components/LiveMarketData";
+import SEO from "@/components/SEO";
 
 const Index = () => {
   return (
-    <main className="min-h-screen bg-background">
-      <Navbar />
+    <div className="min-h-screen bg-background">
+      <SEO
+        title="The Funded Trader Protocol"
+        description="The No-BS, Institutional-Grade Forex System That Turns Retail Losers Into Funded Professionals."
+      />
       <Hero />
       <ForexTicker />
-      
+
       {/* Live Market Section */}
       <section className="py-16 md:py-24">
         <div className="container px-6">
@@ -46,8 +48,7 @@ const Index = () => {
       <Features />
       <CreatorCTA />
       <TrustSection />
-      <Footer />
-    </main>
+    </div>
   );
 };
 

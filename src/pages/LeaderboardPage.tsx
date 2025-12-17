@@ -1,9 +1,8 @@
 import { useState } from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, TrendingUp, TrendingDown, Shield, Star, Filter, ArrowUpDown, ExternalLink } from "lucide-react";
+import { Trophy, TrendingUp, Shield, Star, Filter, ArrowUpDown, ExternalLink } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const traders = [
   { rank: 1, name: "AlphaEdge Capital", avatar: "AE", gain: 847.2, drawdown: 8.4, sharpe: 3.2, winRate: 78, trades: 1247, broker: "FTMO", verified: true, followers: 12400 },
@@ -30,8 +29,11 @@ export default function LeaderboardPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-      
+      <SEO
+        title="Leaderboard"
+        description="Rankings of top performing traders verified by Myfxbook and prop firms."
+      />
+
       {/* Hero Section */}
       <section className="pt-32 pb-16 px-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent" />
@@ -118,12 +120,11 @@ export default function LeaderboardPage() {
                 className="grid grid-cols-12 gap-4 px-6 py-5 border-b border-border/30 hover:bg-secondary/20 transition-colors items-center"
               >
                 <div className="col-span-1">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm ${
-                    trader.rank === 1 ? "bg-yellow-500/20 text-yellow-400" :
-                    trader.rank === 2 ? "bg-gray-400/20 text-gray-300" :
-                    trader.rank === 3 ? "bg-orange-500/20 text-orange-400" :
-                    "bg-secondary text-muted-foreground"
-                  }`}>
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm ${trader.rank === 1 ? "bg-yellow-500/20 text-yellow-400" :
+                      trader.rank === 2 ? "bg-gray-400/20 text-gray-300" :
+                        trader.rank === 3 ? "bg-orange-500/20 text-orange-400" :
+                          "bg-secondary text-muted-foreground"
+                    }`}>
                     {trader.rank}
                   </div>
                 </div>
@@ -186,8 +187,6 @@ export default function LeaderboardPage() {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 }

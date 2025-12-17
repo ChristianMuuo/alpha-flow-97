@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Radio, Shield, TrendingUp, Star, Filter, Grid, List, 
-  CheckCircle, Clock, DollarSign, Users, Zap 
+import SEO from "@/components/SEO";
+import {
+  Radio, Shield, TrendingUp, Star, Filter, Grid, List,
+  CheckCircle, Clock, DollarSign, Users, Zap
 } from "lucide-react";
 
 const signals = [
@@ -136,8 +135,11 @@ export default function SignalsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-      
+      <SEO
+        title="Forex Signals"
+        description="Daily forex signals from verified profitable traders."
+      />
+
       {/* Hero Section */}
       <section className="pt-32 pb-16 px-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent" />
@@ -239,7 +241,7 @@ export default function SignalsPage() {
                     Featured
                   </Badge>
                 )}
-                
+
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center font-bold text-white">
@@ -312,7 +314,6 @@ export default function SignalsPage() {
         </div>
       </section>
 
-      <Footer />
     </div>
   );
 }

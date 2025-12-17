@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import SEO from "@/components/SEO";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
-import { 
-  ShieldCheck, Star, TrendingUp, Download, Calculator, 
+import {
+  ShieldCheck, Star, TrendingUp, Download, Calculator,
   BarChart3, Clock, Users, ArrowLeft, Play, ExternalLink,
   CheckCircle2, AlertTriangle, Target, Zap, Copy, ShoppingCart
 } from "lucide-react";
@@ -124,7 +123,7 @@ const ProductDetailPage = () => {
   const { addItem, isInCart } = useCart();
   const [balance, setBalance] = useState<string>("10000");
   const [activeTab, setActiveTab] = useState("overview");
-  
+
   const product = productId ? mockProducts[productId] : null;
   const inCart = product ? isInCart(product.id) : false;
 
@@ -147,11 +146,11 @@ const ProductDetailPage = () => {
     }
     navigate('/checkout');
   };
-  
+
   if (!product) {
     return (
       <div className="min-h-screen bg-background">
-        <Navbar />
+        <SEO title="Product Not Found" description="The requested product could not be found." />
         <div className="container py-20 text-center">
           <h1 className="text-3xl font-bold text-foreground mb-4">Product Not Found</h1>
           <p className="text-muted-foreground mb-8">The product you're looking for doesn't exist.</p>
@@ -159,7 +158,6 @@ const ProductDetailPage = () => {
             <Button variant="emerald">Browse All Products</Button>
           </Link>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -169,11 +167,14 @@ const ProductDetailPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-      
+      <SEO
+        title={product.name}
+        description={product.description}
+      />
+
       {/* Back Navigation */}
       <div className="container pt-24 pb-4">
-        <Link 
+        <Link
           to={`/${product.type}s`}
           className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         >
@@ -325,7 +326,7 @@ const ProductDetailPage = () => {
                       Connected to {product.broker}
                     </Badge>
                   </div>
-                  
+
                   {/* Mock Equity Curve */}
                   <div className="h-64 bg-card/50 rounded-xl flex items-center justify-center border border-border/50 mb-6">
                     <div className="text-center">
@@ -392,16 +393,16 @@ const ProductDetailPage = () => {
               </div>
 
               <div className="space-y-3 mb-6">
-                <Button 
-                  variant="emerald" 
+                <Button
+                  variant="emerald"
                   className="w-full h-12 text-lg font-semibold"
                   onClick={handleBuyNow}
                 >
                   <Download className="w-5 h-5 mr-2" />
                   Buy Now
                 </Button>
-                <Button 
-                  variant="outline_emerald" 
+                <Button
+                  variant="outline_emerald"
                   className="w-full"
                   onClick={handleAddToCart}
                   disabled={inCart}
@@ -486,7 +487,6 @@ const ProductDetailPage = () => {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 };

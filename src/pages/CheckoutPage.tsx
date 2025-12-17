@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import SEO from "@/components/SEO";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/contexts/CartContext";
@@ -66,7 +66,7 @@ const CheckoutPage = () => {
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-background">
-        <Navbar />
+        <SEO title="Checkout" description="Complete your purchase." />
         <div className="container py-32 text-center">
           <h1 className="text-3xl font-bold text-foreground mb-4">Your cart is empty</h1>
           <p className="text-muted-foreground mb-8">Add some products before checking out.</p>
@@ -81,10 +81,10 @@ const CheckoutPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+      <SEO title="Checkout" description="Complete your purchase." />
 
       <div className="container pt-24 pb-20">
-        <Link 
+        <Link
           to="/"
           className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-8"
         >
@@ -102,7 +102,7 @@ const CheckoutPage = () => {
 
             <div className="card-glass p-6 rounded-2xl space-y-6">
               <h2 className="text-lg font-semibold text-foreground">Contact Information</h2>
-              
+
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name</Label>
@@ -142,9 +142,9 @@ const CheckoutPage = () => {
                   <p className="text-sm text-muted-foreground">Cards, Bank Transfer, USSD</p>
                 </div>
               </div>
-              
-              <Button 
-                variant="emerald" 
+
+              <Button
+                variant="emerald"
                 className="w-full h-12 text-lg font-semibold"
                 onClick={handlePaystack}
                 disabled={loading}
@@ -192,7 +192,7 @@ const CheckoutPage = () => {
                     </div>
                     <div className="text-right">
                       <p className="font-semibold text-foreground">${item.price}</p>
-                      <button 
+                      <button
                         onClick={() => removeItem(item.id)}
                         className="text-xs text-muted-foreground hover:text-destructive transition-colors"
                       >
@@ -234,8 +234,8 @@ const CheckoutPage = () => {
         </div>
       </div>
 
-      <Footer />
     </div>
+    </div >
   );
 };
 

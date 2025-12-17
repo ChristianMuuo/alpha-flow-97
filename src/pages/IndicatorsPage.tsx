@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Activity, Shield, Star, Filter, Grid, List, 
+import SEO from "@/components/SEO";
+import {
+  Activity, Shield, Star, Filter, Grid, List,
   Download, Eye, Code, Palette, Layers, Zap
 } from "lucide-react";
 
@@ -168,8 +167,11 @@ export default function IndicatorsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-      
+      <SEO
+        title="Indicators"
+        description="Premium TradingView and MT4 indicators."
+      />
+
       {/* Hero Section */}
       <section className="pt-32 pb-16 px-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-amber-500/5 to-transparent" />
@@ -280,7 +282,7 @@ export default function IndicatorsPage() {
                     Best Seller
                   </Badge>
                 )}
-                
+
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center font-bold text-white text-sm">
@@ -356,7 +358,6 @@ export default function IndicatorsPage() {
         </div>
       </section>
 
-      <Footer />
     </div>
   );
 }

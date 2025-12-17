@@ -13,6 +13,8 @@ const navLinks = [
   { href: "/eas", label: "EAs", icon: Bot },
   { href: "/indicators", label: "Indicators", icon: BarChart3 },
   { href: "/leaderboard", label: "Leaderboard", icon: TrendingUp },
+  { href: "/blog", label: "Blog", icon: BookOpen },
+  { href: "/library", label: "Library", icon: BookOpen },
 ];
 
 const Navbar = () => {
@@ -125,7 +127,7 @@ const Navbar = () => {
               )}
 
               {/* Mobile Menu Toggle */}
-              <button 
+              <button
                 className="lg:hidden p-2 rounded-lg hover:bg-secondary/50 transition-colors"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
@@ -137,7 +139,7 @@ const Navbar = () => {
       </nav>
 
       {/* Mobile Menu */}
-      <div 
+      <div
         className={cn(
           "fixed inset-0 z-40 lg:hidden transition-all duration-300",
           mobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
