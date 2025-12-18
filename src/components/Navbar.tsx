@@ -58,26 +58,26 @@ const Navbar = () => {
             : "bg-transparent py-5"
         )}
       >
-        <div className="container px-6">
-          <div className="flex items-center justify-between">
+        <div className="container px-4 md:px-6">
+          <div className="flex items-center justify-between gap-4">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-gradient flex items-center justify-center shadow-lg shadow-primary/25">
-                <span className="text-base font-black text-primary-foreground font-display">AX</span>
+            <Link to="/" className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-emerald-gradient flex items-center justify-center shadow-lg shadow-primary/25">
+                <span className="text-sm md:text-base font-black text-primary-foreground font-display">AX</span>
               </div>
               <div className="hidden sm:block">
-                <span className="font-bold text-foreground font-display text-lg">APEX</span>
-                <span className="font-bold emerald-text font-display text-lg ml-1">FOREX</span>
+                <span className="font-bold text-foreground font-display text-base md:text-lg">APEX</span>
+                <span className="font-bold emerald-text font-display text-base md:text-lg ml-1">FOREX</span>
               </div>
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-1">
+            <div className="hidden 2xl:flex items-center gap-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   to={link.href}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
                 >
                   <link.icon className="w-4 h-4" />
                   {link.label}
@@ -86,11 +86,11 @@ const Navbar = () => {
             </div>
 
             {/* Search & CTAs */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
               {/* Search */}
-              <button className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl bg-secondary/50 border border-border/50 text-sm text-muted-foreground hover:text-foreground hover:border-border transition-all">
+              <button className="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary/50 border border-border/50 text-sm text-muted-foreground hover:text-foreground hover:border-border transition-all w-8 md:w-auto justify-center md:justify-start">
                 <Search className="w-4 h-4" />
-                <span>Search products...</span>
+                <span className="hidden lg:inline">Search products...</span>
                 <kbd className="hidden lg:inline-flex h-5 items-center gap-1 rounded border border-border/50 bg-muted px-1.5 font-mono text-xs text-muted-foreground">
                   ⌘K
                 </kbd>
@@ -110,17 +110,22 @@ const Navbar = () => {
                   </Link>
                   <Button variant="emerald" size="sm" onClick={handleSignOut}>
                     <LogOut className="w-4 h-4 mr-2" />
-                    Sign Out
+                    <span className="hidden md:inline">Sign Out</span>
                   </Button>
                 </>
               ) : (
                 <>
-                  <Button variant="glass" size="sm" className="hidden sm:flex">
+                  <Button variant="glass" size="sm" className="hidden 2xl:flex whitespace-nowrap">
                     Sell on Apex
                   </Button>
                   <Link to="/auth">
-                    <Button variant="emerald" size="sm">
-                      Sign In
+                    <Button variant="ghost" size="sm" className="hidden sm:flex whitespace-nowrap">
+                      Log In
+                    </Button>
+                  </Link>
+                  <Link to="/auth">
+                    <Button variant="emerald" size="sm" className="whitespace-nowrap">
+                      Sign Up
                     </Button>
                   </Link>
                 </>
@@ -128,7 +133,7 @@ const Navbar = () => {
 
               {/* Mobile Menu Toggle */}
               <button
-                className="lg:hidden p-2 rounded-lg hover:bg-secondary/50 transition-colors"
+                className="2xl:hidden p-2 rounded-lg hover:bg-secondary/50 transition-colors"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -141,7 +146,7 @@ const Navbar = () => {
       {/* Mobile Menu */}
       <div
         className={cn(
-          "fixed inset-0 z-40 lg:hidden transition-all duration-300",
+          "fixed inset-0 z-40 2xl:hidden transition-all duration-300",
           mobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}
       >

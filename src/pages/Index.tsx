@@ -11,7 +11,7 @@ import SEO from "@/components/SEO";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       <SEO
         title="The Funded Trader Protocol"
         description="The No-BS, Institutional-Grade Forex System That Turns Retail Losers Into Funded Professionals."

@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, TrendingUp } from 'lucide-react';
 import Navbar from '@/components/Navbar';
+import SEO from '@/components/SEO';
 
 const AuthPage = () => {
   const [email, setEmail] = useState('');
@@ -41,7 +42,7 @@ const AuthPage = () => {
       toast({ title: 'Error', description: 'Please fill in all fields', variant: 'destructive' });
       return;
     }
-    
+
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
@@ -60,9 +61,9 @@ const AuthPage = () => {
       toast({ title: 'Error', description: 'Please fill in all fields', variant: 'destructive' });
       return;
     }
-    
+
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -78,38 +79,59 @@ const AuthPage = () => {
       } else {
         toast({ title: 'Sign Up Failed', description: error.message, variant: 'destructive' });
       }
-    } else {
+    } else if (data.session) {
+      // User is auto-confirmed (or email confirmation disabled) - session exists
       toast({ title: 'Account Created!', description: 'Welcome to QuantumFX!' });
       navigate('/dashboard');
+    } else if (data.user) {
+      // User created but no session -> Email confirmation pending
+      toast({
+        title: 'Account Created',
+        description: 'Please check your email to verify your account before logging in.',
+        duration: 6000
+      });
+      // Switch to login tab so they can login after clicking link
+      const loginTab = document.querySelector('[value="login"]') as HTMLElement;
+      if (loginTab) loginTab.click();
     }
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      <SEO
+        title="Login / Sign Up"
+        description="Access your QuantumFX dashboard to manage your trading tools and signals."
+      />
+
+      {/* Background Elements */}
+      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-emerald-500/5 blur-[120px] rounded-full pointer-events-none" />
+
       <Navbar />
-      <div className="container mx-auto px-4 pt-32 pb-20">
+      <div className="container mx-auto px-4 pt-32 pb-20 relative z-10">
         <div className="max-w-md mx-auto">
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-2 mb-4">
-              <TrendingUp className="h-10 w-10 text-primary" />
-              <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                QuantumFX
-              </span>
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                <span className="text-xl font-black text-white font-display">Q</span>
+              </div>
             </div>
-            <h1 className="text-3xl font-bold mb-2">Welcome to QuantumFX</h1>
+            <h1 className="text-3xl font-bold mb-2">
+              Welcome to <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">QuantumFX</span>
+            </h1>
             <p className="text-muted-foreground">Access premium trading tools and track your purchases</p>
           </div>
 
-          <Card className="border-border/50 bg-card/50 backdrop-blur">
+          <Card className="border-border/50 bg-card/50 backdrop-blur-xl shadow-2xl">
             <CardHeader>
               <CardTitle>Get Started</CardTitle>
               <CardDescription>Sign in or create an account to continue</CardDescription>
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="login" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-6">
-                  <TabsTrigger value="login">Login</TabsTrigger>
-                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-2 mb-6 bg-secondary/50">
+                  <TabsTrigger value="login" className="data-[state=active]:bg-background data-[state=active]:text-emerald-500">Login</TabsTrigger>
+                  <TabsTrigger value="signup" className="data-[state=active]:bg-background data-[state=active]:text-emerald-500">Sign Up</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="login">
@@ -123,6 +145,7 @@ const AuthPage = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
+                        className="bg-background/50 border-input hover:border-emerald-500/50 focus:border-emerald-500 transition-colors"
                       />
                     </div>
                     <div className="space-y-2">
@@ -135,17 +158,18 @@ const AuthPage = () => {
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                           required
+                          className="bg-background/50 border-input hover:border-emerald-500/50 focus:border-emerald-500 transition-colors pr-10"
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-emerald-500 transition-colors"
                         >
                           {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </button>
                       </div>
                     </div>
-                    <Button type="submit" className="w-full" disabled={loading}>
+                    <Button type="submit" className="w-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20" disabled={loading}>
                       {loading ? 'Signing in...' : 'Sign In'}
                     </Button>
                   </form>
@@ -162,6 +186,7 @@ const AuthPage = () => {
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         required
+                        className="bg-background/50 border-input hover:border-emerald-500/50 focus:border-emerald-500 transition-colors"
                       />
                     </div>
                     <div className="space-y-2">
@@ -173,6 +198,7 @@ const AuthPage = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
+                        className="bg-background/50 border-input hover:border-emerald-500/50 focus:border-emerald-500 transition-colors"
                       />
                     </div>
                     <div className="space-y-2">
@@ -186,17 +212,18 @@ const AuthPage = () => {
                           onChange={(e) => setPassword(e.target.value)}
                           required
                           minLength={6}
+                          className="bg-background/50 border-input hover:border-emerald-500/50 focus:border-emerald-500 transition-colors pr-10"
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-emerald-500 transition-colors"
                         >
                           {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </button>
                       </div>
                     </div>
-                    <Button type="submit" className="w-full" disabled={loading}>
+                    <Button type="submit" className="w-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20" disabled={loading}>
                       {loading ? 'Creating Account...' : 'Create Account'}
                     </Button>
                   </form>

@@ -37,7 +37,7 @@ const ForexTicker = () => {
   }, []);
 
   return (
-    <div className="tradingview-widget-container border-y border-border/30 bg-card/30 backdrop-blur-sm">
+    <div className="tradingview-widget-container border-y border-border/30 bg-card/30 backdrop-blur-sm w-full max-w-full overflow-hidden">
       <div ref={containerRef} className="tradingview-widget-container__widget"></div>
     </div>
   );
