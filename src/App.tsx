@@ -25,6 +25,7 @@ const MarketsPage = lazy(() => import("./pages/MarketsPage"));
 const BlogPage = lazy(() => import("./pages/BlogPage"));
 const BlogPostPage = lazy(() => import("./pages/BlogPostPage"));
 const LibraryPage = lazy(() => import("./pages/LibraryPage"));
+const ImmersiveReaderPage = lazy(() => import("./pages/ImmersiveReaderPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -49,6 +50,7 @@ const App = () => (
                   <Route path="/blog" element={<BlogPage />} />
                   <Route path="/blog/:slug" element={<BlogPostPage />} />
                   <Route path="/library" element={<LibraryPage />} />
+                  <Route path="/library/read/:bookId" element={<ImmersiveReaderPage />} />
                   <Route path="/product/:productId" element={<ProductDetailPage />} />
                   <Route path="/checkout" element={<CheckoutPage />} />
                   <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
