@@ -212,7 +212,7 @@ export function UploadBookDialog() {
 
                     <div className="grid gap-2">
                         <Label htmlFor="category">Category</Label>
-                        <Input id="category" name="category" placeholder="e.g. Psychology, Technical Analysis" className="bg-secondary/50" required />
+                        <Input id="category" name="category" placeholder="e.g. Psychology, Smart Money Concepts, Technical Analysis" className="bg-secondary/50" required />
                     </div>
 
                     <div className="grid gap-2">

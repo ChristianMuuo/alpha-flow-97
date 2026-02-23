@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, TrendingUp } from 'lucide-react';
 import Navbar from '@/components/Navbar';
@@ -17,6 +18,8 @@ const AuthPage = () => {
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showResetDialog, setShowResetDialog] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -96,6 +99,31 @@ const AuthPage = () => {
     }
   };
 
+  const handlePasswordReset = async () => {
+    if (!resetEmail) {
+      toast({ title: 'Error', description: 'Please enter your email address', variant: 'destructive' });
+      return;
+    }
+
+    setLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+      redirectTo: `${window.location.origin}/auth/reset-password`,
+    });
+    setLoading(false);
+
+    if (error) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    } else {
+      toast({
+        title: 'Check Your Email',
+        description: 'We sent you a password reset link. Please check your inbox.',
+        duration: 6000
+      });
+      setShowResetDialog(false);
+      setResetEmail('');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       <SEO
@@ -172,6 +200,15 @@ const AuthPage = () => {
                     <Button type="submit" className="w-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20" disabled={loading}>
                       {loading ? 'Signing in...' : 'Sign In'}
                     </Button>
+                    <div className="text-center mt-2">
+                      <button
+                        type="button"
+                        onClick={() => setShowResetDialog(true)}
+                        className="text-sm text-muted-foreground hover:text-emerald-500 transition-colors underline"
+                      >
+                        Forgot Password?
+                      </button>
+                    </div>
                   </form>
                 </TabsContent>
 
@@ -233,6 +270,39 @@ const AuthPage = () => {
           </Card>
         </div>
       </div>
+
+      {/* Password Reset Dialog */}
+      <Dialog open={showResetDialog} onOpenChange={setShowResetDialog}>
+        <DialogContent className="sm:max-w-md bg-card border-border/50">
+          <DialogHeader>
+            <DialogTitle>Reset Password</DialogTitle>
+            <DialogDescription>
+              Enter your email address and we'll send you a link to reset your password.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="reset-email">Email</Label>
+              <Input
+                id="reset-email"
+                type="email"
+                placeholder="you@example.com"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handlePasswordReset()}
+                className="bg-background/50 border-input hover:border-emerald-500/50 focus:border-emerald-500 transition-colors"
+              />
+            </div>
+            <Button
+              onClick={handlePasswordReset}
+              className="w-full bg-emerald-500 hover:bg-emerald-600 text-white"
+              disabled={loading}
+            >
+              {loading ? 'Sending...' : 'Send Reset Link'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

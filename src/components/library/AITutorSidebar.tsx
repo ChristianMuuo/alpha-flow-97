@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, User, Sparkles, Brain, Lightbulb } from "lucide-react";
+import { Send, User, Sparkles, Brain, Lightbulb, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { aiTutorService, BookContext } from "@/services/aiTutor";
+import { useToast } from "@/hooks/use-toast";
 
 interface AITutorSidebarProps {
     bookTitle?: string;
+    bookId?: string;
+    currentPage?: number;
+    totalPages?: number;
+    category?: string;
 }
 
 interface Message {
@@ -17,53 +23,173 @@ interface Message {
     type?: 'default' | 'summary' | 'concept';
 }
 
-export const AITutorSidebar = ({ bookTitle }: AITutorSidebarProps) => {
+export const AITutorSidebar = ({
+    bookTitle,
+    bookId,
+    currentPage = 1,
+    totalPages = 1,
+    category = "Trading"
+}: AITutorSidebarProps) => {
     const [messages, setMessages] = useState<Message[]>([
         {
             id: '1',
             role: 'assistant',
-            text: `Hello! I'm Athena, your Anti-Gravity tutor. I'm reading "${bookTitle || 'this book'}" with you. Would you like a summary of the current chapter or an explanation of a complex concept?`
+            text: `Hello! I'm Athena, your AI tutor. I'm reading "${bookTitle || 'this book'}" with you. Ask me anything about trading concepts, or request a summary of what you're reading!`
         }
     ]);
     const [inputValue, setInputValue] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const { toast } = useToast();
 
-    const handleSend = () => {
+    // Load conversation history on mount
+    useEffect(() => {
+        if (bookId) {
+            aiTutorService.loadHistory(bookId);
+            const history = aiTutorService.getHistory();
+            if (history.length > 0) {
+                setMessages([
+                    messages[0], // Keep welcome message
+                    ...history.map(msg => ({
+                        id: msg.timestamp.toString(),
+                        role: msg.role,
+                        text: msg.content
+                    }))
+                ]);
+            }
+        }
+    }, [bookId]);
+
+    const handleSend = async () => {
         if (!inputValue.trim()) return;
 
-        const newMessage: Message = { id: Date.now().toString(), role: 'user', text: inputValue };
-        setMessages([...messages, newMessage]);
+        const newMessage: Message = {
+            id: Date.now().toString(),
+            role: 'user',
+            text: inputValue
+        };
+        setMessages(prev => [...prev, newMessage]);
         setInputValue("");
         setIsLoading(true);
 
-        // Mock AI response
-        setTimeout(() => {
-            const responseText = "That's an excellent question about market structure. In this context, the author emphasizes that risk is subjective. The 'Edge' is merely a higher probability of one thing happening over another.";
-            setMessages(prev => [...prev, { id: (Date.now() + 1).toString(), role: 'assistant', text: responseText }]);
+        try {
+            // Build book context
+            const context: BookContext = {
+                bookTitle: bookTitle || 'Unknown Book',
+                currentPage,
+                totalPages,
+                category
+            };
+
+            // Get AI response
+            const response = await aiTutorService.sendMessage(inputValue, context);
+
+            const responseMessage: Message = {
+                id: (Date.now() + 1).toString(),
+                role: 'assistant',
+                text: response
+            };
+
+            setMessages(prev => [...prev, responseMessage]);
+
+            // Save conversation history
+            if (bookId) {
+                aiTutorService.saveHistory(bookId);
+            }
+        } catch (error: any) {
+            const errorMessage = error.message || "Failed to get AI response";
+
+            // Check if it's an API key error
+            const isApiKeyError = errorMessage.includes('API key') || errorMessage.includes('not configured');
+
+            toast({
+                title: isApiKeyError ? "Setup Required" : "Error",
+                description: isApiKeyError
+                    ? "AI Tutor needs to be configured. Check the chat for instructions."
+                    : errorMessage,
+                variant: "destructive"
+            });
+
+            // Add helpful setup message for API key errors
+            if (isApiKeyError) {
+                setMessages(prev => [...prev, {
+                    id: (Date.now() + 1).toString(),
+                    role: 'assistant',
+                    text: `🔑 **AI Tutor Setup Required**
+
+To use the AI tutor, you need to add a Google Gemini API key:
+
+**Step 1:** Get a free API key
+Visit: https://aistudio.google.com/app/apikey
+
+**Step 2:** Add to your .env file
+\`\`\`
+VITE_GEMINI_API_KEY="your_actual_key_here"
+\`\`\`
+
+**Step 3:** Restart the dev server
+Stop the current server and run \`npm run dev\` again.
+
+The API is free with generous limits (60 requests/minute)!`
+                }]);
+            } else {
+                // Add fallback message for other errors
+                setMessages(prev => [...prev, {
+                    id: (Date.now() + 1).toString(),
+                    role: 'assistant',
+                    text: `I apologize, but I'm having trouble connecting right now.
+
+**Error Details:** ${errorMessage}
+
+Please try again in a moment.`
+                }]);
+            }
+        } finally {
             setIsLoading(false);
-        }, 1500);
+        }
     };
 
     const handleSuggestion = (type: string) => {
         let text = "";
-        if (type === 'summary') text = "Can you summarize the key takeaways of this chapter?";
-        if (type === 'quiz') text = "Quiz me on the last 5 pages.";
+        if (type === 'summary') text = `Can you summarize the key concepts on page ${currentPage}?`;
+        if (type === 'quiz') text = "Quiz me on what I've read so far.";
 
         setInputValue(text);
-        // Could auto-send here
+    };
+
+    const clearHistory = () => {
+        if (bookId) {
+            aiTutorService.clearHistory();
+            aiTutorService.saveHistory(bookId);
+        }
+        setMessages([messages[0]]); // Keep only welcome message
+        toast({
+            title: "History Cleared",
+            description: "Conversation history has been reset."
+        });
     };
 
     return (
         <div className="flex flex-col h-full bg-[#0c0c0c] text-gray-200">
             {/* Header */}
-            <div className="p-4 border-b border-[#2a2a2a] flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                    <Sparkles className="w-4 h-4 text-emerald-400" />
+            <div className="p-4 border-b border-[#2a2a2a] flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                        <Sparkles className="w-4 h-4 text-emerald-400" />
+                    </div>
+                    <div>
+                        <h3 className="text-sm font-semibold text-white">Athena AI</h3>
+                        <p className="text-[10px] text-emerald-500 font-mono uppercase tracking-wider">Page {currentPage} of {totalPages}</p>
+                    </div>
                 </div>
-                <div>
-                    <h3 className="text-sm font-semibold text-white">Athena AI</h3>
-                    <p className="text-[10px] text-emerald-500 font-mono uppercase tracking-wider">Context Aware</p>
-                </div>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearHistory}
+                    className="h-8 w-8 p-0 hover:bg-red-500/20 hover:text-red-400"
+                    title="Clear conversation history"
+                >
+                    <Trash2 className="h-4 w-4" />
+                </Button>
             </div>
 
             {/* Chat Area */}

@@ -133,6 +133,16 @@ export default function SignalsPage() {
   const [selectedPrice, setSelectedPrice] = useState("All Prices");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
+  const filteredSignals = signals.filter(signal => {
+    const styleMatch = selectedStyle === "All Styles" || signal.style === selectedStyle;
+    let priceMatch = true;
+    if (selectedPrice === "Under $50") priceMatch = signal.price < 50;
+    else if (selectedPrice === "$50-$100") priceMatch = signal.price >= 50 && signal.price <= 100;
+    else if (selectedPrice === "$100-$200") priceMatch = signal.price > 100 && signal.price <= 200;
+    else if (selectedPrice === "$200+") priceMatch = signal.price > 200;
+    return styleMatch && priceMatch;
+  });
+
   return (
     <div className="min-h-screen bg-background">
       <SEO
@@ -229,8 +239,17 @@ export default function SignalsPage() {
       {/* Signal Cards */}
       <section className="py-12 px-4">
         <div className="container mx-auto">
+          {filteredSignals.length === 0 && (
+            <div className="text-center py-20 text-muted-foreground col-span-full">
+              <p className="text-lg">No signal providers match your current filters.</p>
+              <button
+                onClick={() => { setSelectedStyle("All Styles"); setSelectedPrice("All Prices"); }}
+                className="mt-3 text-cyan-400 underline text-sm"
+              >Clear filters</button>
+            </div>
+          )}
           <div className={`grid gap-6 ${viewMode === "grid" ? "md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
-            {signals.map((signal) => (
+            {filteredSignals.map((signal) => (
               <Link
                 key={signal.id}
                 to={`/product/${signal.name.toLowerCase().replace(/\s+/g, '-')}`}

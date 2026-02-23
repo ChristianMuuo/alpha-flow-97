@@ -26,6 +26,7 @@ const BlogPage = lazy(() => import("./pages/BlogPage"));
 const BlogPostPage = lazy(() => import("./pages/BlogPostPage"));
 const LibraryPage = lazy(() => import("./pages/LibraryPage"));
 const ImmersiveReaderPage = lazy(() => import("./pages/ImmersiveReaderPage"));
+const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -57,6 +58,7 @@ const App = () => (
                   <Route path="*" element={<NotFound />} />
                 </Route>
                 <Route path="/auth" element={<AuthPage />} />
+                <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
               </Routes>
             </Suspense>

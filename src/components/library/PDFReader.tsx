@@ -52,14 +52,34 @@ export const PDFReader = ({ url, isDistractionFree }: PDFReaderProps) => {
             </div>
 
             {/* Floating Controls */}
-            <div className={`absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-black/80 backdrop-blur border border-white/10 p-2 rounded-full transition-opacity duration-300 ${isDistractionFree ? 'opacity-0 hover:opacity-100' : 'opacity-100'}`}>
-                <Button variant="ghost" size="icon" onClick={() => setPageNumber(p => Math.max(1, p - 1))} disabled={pageNumber <= 1} className="text-white hover:bg-white/10 rounded-full h-8 w-8">
+            <div className={`absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-black/80 backdrop-blur border border-white/10 p-2 rounded-full transition-opacity duration-300 z-50 pointer-events-auto ${isDistractionFree ? 'opacity-0 hover:opacity-100' : 'opacity-100'}`}>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setPageNumber(p => Math.max(1, p - 1))}
+                    disabled={pageNumber <= 1}
+                    className="text-white hover:bg-white/10 rounded-full h-8 w-8 disabled:opacity-30 disabled:cursor-not-allowed"
+                >
                     <ChevronLeft className="w-4 h-4" />
                 </Button>
                 <span className="text-xs font-mono text-gray-300 min-w-[60px] text-center">
                     {pageNumber} / {numPages || '--'}
                 </span>
-                <Button variant="ghost" size="icon" onClick={() => setPageNumber(p => Math.min(numPages || 100, p + 1))} disabled={pageNumber >= (numPages || 100)} className="text-white hover:bg-white/10 rounded-full h-8 w-8">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        console.log('Next button clicked, current page:', pageNumber, 'total pages:', numPages);
+                        setPageNumber(p => {
+                            const nextPage = Math.min(numPages || p, p + 1);
+                            console.log('Moving from page', p, 'to page', nextPage);
+                            return nextPage;
+                        });
+                    }}
+                    disabled={!numPages || pageNumber >= numPages}
+                    className="text-white hover:bg-white/10 rounded-full h-8 w-8 disabled:opacity-30 disabled:cursor-not-allowed"
+                >
                     <ChevronRight className="w-4 h-4" />
                 </Button>
                 <div className="w-px h-4 bg-white/20 mx-1" />

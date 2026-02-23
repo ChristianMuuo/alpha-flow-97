@@ -74,34 +74,18 @@ const BlogPostPage = () => {
             <div className="container mx-auto px-4 mt-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
                 {/* Main Content */}
                 <div className="lg:col-span-8">
-                    <div className="prose prose-invert prose-lg max-w-none">
-                        <p className="lead text-xl text-muted-foreground mb-8">
+                    <div className="prose prose-invert prose-lg max-w-none
+                        [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-10 [&_h2]:mb-4 [&_h2]:text-foreground
+                        [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mt-8 [&_h3]:mb-3 [&_h3]:text-foreground
+                        [&_p]:text-muted-foreground [&_p]:leading-relaxed [&_p]:mb-6
+                        [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-6 [&_ul_li]:text-muted-foreground [&_ul_li]:mb-2
+                        [&_blockquote]:border-l-4 [&_blockquote]:border-indigo-500 [&_blockquote]:pl-6 [&_blockquote]:italic [&_blockquote]:text-indigo-300 [&_blockquote]:my-8 [&_blockquote]:text-lg
+                        [&_strong]:text-foreground [&_strong]:font-semibold
+                        [&_em]:text-indigo-300">
+                        <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
                             {post.excerpt}
                         </p>
-                        {/* Mock Content */}
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                        </p>
-                        <h2>The Core Strategy</h2>
-                        <p>
-                            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                        </p>
-                        <blockquote>
-                            "Success in trading comes from risk management, not prediction."
-                        </blockquote>
-                        <p>
-                            Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-                        </p>
-                        <h3>Key Takeaways</h3>
-                        <ul>
-                            <li>Always define your risk per trade</li>
-                            <li>Stick to your trading plan</li>
-                            <li>Journal every trade you take</li>
-                            <li>Focus on execution, not the outcome</li>
-                        </ul>
-                        <p>
-                            Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.
-                        </p>
+                        <div dangerouslySetInnerHTML={{ __html: post.content }} />
                     </div>
 
                     {/* Share Section */}
