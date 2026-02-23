@@ -107,6 +107,11 @@ export class BacktestSimulator {
         };
     }
 
+    // Safe access to internals
+    getCurrentCandle(): Candle {
+        return { ...this.state.currentCandle };
+    }
+
     // Initialize with a full historical candle directly
     processHistoricalCandle(historicalCandle: Candle) {
         if (!historicalCandle || isNaN(historicalCandle.close)) return;

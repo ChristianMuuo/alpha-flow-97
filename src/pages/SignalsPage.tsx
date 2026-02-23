@@ -18,10 +18,10 @@ function toBinance(pair: string): string {
   const map: Record<string, string> = {
     "EURUSD": "EURUSDT",
     "GBPUSD": "GBPUSDT",
-    "XAUUSD": "XAUUSDT",
-    "XAGUSD": "XAGUSDT",
+    "XAUUSD": "PAXGUSDT",
+    "XAGUSD": "PAXGUSDT",
     "BTCUSDT": "BTCUSDT",
-    "USDJPY": "EURUSDT",   // Binance is crypto-only; fallback to EUR for JPY pairs
+    "USDJPY": "BTCUSDT",   // Binance is crypto-only; fallback to BTC for JPY pairs
     "GBPJPY": "GBPUSDT",
     "EURJPY": "EURUSDT",
     "AUDJPY": "EURUSDT",
@@ -204,7 +204,7 @@ export default function SignalsPage() {
       if (simulatorRef.current) {
         const m = simulatorRef.current.getMetrics();
         setCandles([...(m.history || [])]);
-        setCurrentCandle({ ...(simulatorRef.current as any)['state'].currentCandle });
+        setCurrentCandle(simulatorRef.current.getCurrentCandle());
         setVolumeProfile([...(m.volumeProfile || [])]);
         updateMetrics();
       }

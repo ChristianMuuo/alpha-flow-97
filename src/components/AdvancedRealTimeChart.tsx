@@ -136,13 +136,19 @@ export const AdvancedRealTimeChart: React.FC<AdvancedRealTimeChartProps> = ({
 
         const W = container.clientWidth;
         const H = container.clientHeight;
-        if (canvas.width !== W || canvas.height !== H) {
-            canvas.width = W;
-            canvas.height = H;
+        const dpr = window.devicePixelRatio || 1;
+
+        if (canvas.width !== W * dpr || canvas.height !== H * dpr) {
+            canvas.width = W * dpr;
+            canvas.height = H * dpr;
+            canvas.style.width = `${W}px`;
+            canvas.style.height = `${H}px`;
         }
 
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
+        ctx.resetTransform();
+        ctx.scale(dpr, dpr);
 
         const data = renderDataRef.current.candles;
         const currentPrice = renderDataRef.current.currentPrice;
@@ -169,9 +175,12 @@ export const AdvancedRealTimeChart: React.FC<AdvancedRealTimeChartProps> = ({
 
         if (data.length === 0) {
             ctx.fillStyle = '#555';
-            ctx.font = '13px monospace';
+            ctx.font = 'bold 14px monospace';
             ctx.textAlign = 'center';
-            ctx.fillText('Fetching market data...', W / 2, H / 2);
+            ctx.fillText('Synchronizing with Binance API...', W / 2, H / 2);
+            ctx.font = '10px monospace';
+            ctx.fillStyle = '#333';
+            ctx.fillText('Checking liquidity pools and historical klines...', W / 2, H / 2 + 20);
             return;
         }
 

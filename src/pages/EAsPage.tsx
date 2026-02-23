@@ -130,9 +130,9 @@ export default function EAsPage() {
   // ── Symbol mapping helper (forex → Binance spot) ─────────────────
   const toBinance = (pair: string): string => {
     const m: Record<string, string> = {
-      'EURUSD': 'EURUSDT', 'GBPUSD': 'GBPUSDT', 'XAUUSD': 'XAUUSDT',
-      'XAGUSD': 'XAGUSDT', 'BTCUSDT': 'BTCUSDT', 'USDJPY': 'EURUSDT',
-      'GBPJPY': 'GBPUSDT', 'EURJPY': 'EURUSDT', 'AUDUSD': 'EURUSDT',
+      'EURUSD': 'EURUSDT', 'GBPUSD': 'GBPUSDT', 'XAUUSD': 'PAXGUSDT',
+      'XAGUSD': 'PAXGUSDT', 'BTCUSDT': 'BTCUSDT', 'USDJPY': 'BTCUSDT',
+      'GBPJPY': 'BTCUSDT', 'EURJPY': 'EURUSDT', 'AUDUSD': 'EURUSDT',
       'USDCAD': 'EURUSDT', 'NZDUSD': 'EURUSDT', 'EURGBP': 'GBPUSDT',
       'AUDJPY': 'EURUSDT', 'CADJPY': 'EURUSDT', 'NZDJPY': 'EURUSDT',
       'All Majors': 'EURUSDT',
@@ -230,7 +230,7 @@ export default function EAsPage() {
       if (simulatorRef.current) {
         const m = simulatorRef.current.getMetrics();
         setCandles([...(m.history || [])]);
-        setCurrentCandle({ ...simulatorRef.current['state'].currentCandle });
+        setCurrentCandle(simulatorRef.current.getCurrentCandle());
         setVolumeProfile([...(m.volumeProfile || [])]);
         updateUiMetrics();
       }
