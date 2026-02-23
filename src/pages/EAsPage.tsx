@@ -92,6 +92,7 @@ export default function EAsPage() {
   // Backtest state
   const [isBacktestOpen, setIsBacktestOpen] = useState(false);
   const [activeEA, setActiveEA] = useState<any>(null);
+  const [activePair, setActivePair] = useState("EURUSD"); // selected pair for this EA session
   const [simulationMode, setSimulationMode] = useState<"backtest" | "live">("backtest");
   const [candles, setCandles] = useState<Candle[]>([]);
   const [currentCandle, setCurrentCandle] = useState<Candle | null>(null);
@@ -126,9 +127,24 @@ export default function EAsPage() {
   };
   const comparedEAs = eas.filter(e => compareIds.includes(e.id));
 
+  // ── Symbol mapping helper (forex → Binance spot) ─────────────────
+  const toBinance = (pair: string): string => {
+    const m: Record<string, string> = {
+      'EURUSD': 'EURUSDT', 'GBPUSD': 'GBPUSDT', 'XAUUSD': 'XAUUSDT',
+      'XAGUSD': 'XAGUSDT', 'BTCUSDT': 'BTCUSDT', 'USDJPY': 'EURUSDT',
+      'GBPJPY': 'GBPUSDT', 'EURJPY': 'EURUSDT', 'AUDUSD': 'EURUSDT',
+      'USDCAD': 'EURUSDT', 'NZDUSD': 'EURUSDT', 'EURGBP': 'GBPUSDT',
+      'AUDJPY': 'EURUSDT', 'CADJPY': 'EURUSDT', 'NZDJPY': 'EURUSDT',
+      'All Majors': 'EURUSDT',
+    };
+    return m[pair] || 'EURUSDT';
+  };
+
   // ── Backtest Start ─────────────────────────────────────────────
-  const startBacktest = async (ea: any, mode: "backtest" | "live" = "backtest") => {
+  const startBacktest = async (ea: any, mode: "backtest" | "live" = "backtest", pairOverride?: string) => {
+    const chosenPair = pairOverride || ea.pairs[0] || 'EURUSD';
     setActiveEA(ea);
+    setActivePair(chosenPair);
     setSimulationMode(mode);
     setIsBacktestOpen(true);
     setCandles([]); setCurrentCandle(null); setVolumeProfile([]); setDeepMetrics(undefined);
@@ -137,16 +153,17 @@ export default function EAsPage() {
     if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
     if (wsRef.current) { wsRef.current.close(); wsRef.current = null; }
 
-    const winRate = ea.style === "Scalping" ? 0.75 : 0.55;
-    const avgWin = ea.style === "Scalping" ? 50 : 150;
-    const avgLoss = ea.style === "Scalping" ? 40 : 100;
-    const volatility = ea.style === "Metals Trading" ? 30 : 15;
+    const isMetals   = chosenPair === 'XAUUSD' || chosenPair === 'XAGUSD';
+    const winRate    = ea.style === "Scalping" ? 0.75 : 0.55;
+    const avgWin     = isMetals ? 800 : ea.style === "Scalping" ? 50 : 150;
+    const avgLoss    = isMetals ? 600 : ea.style === "Scalping" ? 40 : 100;
+    const volatility = isMetals ? 45 : 15;
 
     simulatorRef.current = new BacktestSimulator({
-      initialBalance: mode === "live" ? 500000 : 10000, // 1:3000 leverage — large notional account
+      initialBalance: mode === "live" ? 500000 : 10000,
       winRate, avgWin, avgLoss,
       volatility: mode === "live" ? volatility * 0.5 : volatility,
-      symbol: ea.pairs[0] || "EURUSD"
+      symbol: chosenPair
     });
 
     const updateUiMetrics = () => {
@@ -166,13 +183,9 @@ export default function EAsPage() {
       });
     };
 
-    // Symbol mapping
-    const originalSymbol = ea.pairs[0] || "EURUSD";
-    let binanceSymbol = "";
-    if (originalSymbol === "XAUUSD") binanceSymbol = "XAUUSDT";
-    else if (originalSymbol.endsWith("USDT")) binanceSymbol = originalSymbol;
-    else if (originalSymbol === "All Majors") binanceSymbol = "EURUSDT";
-    else binanceSymbol = `${originalSymbol}T`;
+    // Symbol mapping via helper
+    const originalSymbol = chosenPair;
+    const binanceSymbol  = toBinance(originalSymbol);
 
     try {
       const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=${binanceSymbol}&interval=1m&limit=500`);
@@ -521,7 +534,25 @@ export default function EAsPage() {
               <Bot className="w-5 h-5 text-purple-400" />
               {simulationMode === "live" ? "Live Market Trading:" : "Strategy Analysis:"}{" "}
               <span className="text-purple-400">{activeEA?.name}</span>
-              {/* Live pair + price display */}
+
+              {/* Pair switcher — one button per EA pair */}
+              {activeEA && activeEA.pairs.length > 0 && (
+                <div className="flex gap-1">
+                  {activeEA.pairs.map((p: string) => (
+                    <button key={p}
+                      onClick={() => startBacktest(activeEA, simulationMode, p)}
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold transition-colors ${
+                        activePair === p
+                          ? "bg-purple-500 text-white"
+                          : "bg-white/5 text-gray-400 hover:bg-purple-500/20 hover:text-purple-300"
+                      }`}>
+                      {p === "XAUUSD" ? "🥇 GOLD" : p === "XAGUSD" ? "🥈 XAG" : p === "BTCUSDT" ? "₿ BTC" : p}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Live price pill */}
               {simMetrics.symbol && (
                 <span className="flex items-center gap-2 bg-black/60 border border-emerald-500/30 rounded-full px-3 py-0.5 text-sm font-mono">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
@@ -535,9 +566,7 @@ export default function EAsPage() {
                   </span>
                 </span>
               )}
-              <Badge variant="outline" className="bg-purple-500/10 text-purple-300 border-purple-500/40 text-xs">
-                1:3000
-              </Badge>
+              <Badge variant="outline" className="bg-purple-500/10 text-purple-300 border-purple-500/40 text-xs">1:3000</Badge>
               <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/40 text-xs">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 mr-1.5 animate-pulse inline-block" />
                 LIVE BINANCE
