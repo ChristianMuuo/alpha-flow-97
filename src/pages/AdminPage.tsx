@@ -8,12 +8,15 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Shield, Users, ShoppingBag, BookOpen, Bot, TrendingUp,
-  Settings, RefreshCw, CheckCircle, XCircle, Search, ShieldAlert
+  Settings, RefreshCw, CheckCircle, XCircle, Search, ShieldAlert,
+  Brain, Cpu
 } from "lucide-react";
 import SEO from "@/components/SEO";
 import Navbar from "@/components/Navbar";
 import { useToast } from "@/hooks/use-toast";
 import { CustomerChurnDashboard } from "@/components/crm/CustomerChurnDashboard";
+import { AgentObservabilityDashboard } from "@/components/agentPlatform/AgentObservabilityDashboard";
+import { AgentMemoryViewerModal } from "@/components/agentPlatform/AgentMemoryViewerModal";
 
 interface UserProfile {
   id: string;
@@ -42,6 +45,7 @@ export default function AdminPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [searchUsers, setSearchUsers] = useState("");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [isMemoryModalOpen, setIsMemoryModalOpen] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -129,9 +133,19 @@ export default function AdminPage() {
                 <p className="text-sm text-muted-foreground">Manage users, orders, content</p>
               </div>
             </div>
-            <Button variant="outline" size="sm" onClick={fetchData} className="gap-2">
-              <RefreshCw className="w-4 h-4" /> Refresh
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsMemoryModalOpen(true)}
+                className="gap-2 border-purple-500/30 text-purple-300 hover:bg-purple-500/10 text-xs h-8"
+              >
+                <Brain className="w-3.5 h-3.5 text-purple-400" /> AI Memory Directives
+              </Button>
+              <Button variant="outline" size="sm" onClick={fetchData} className="gap-2 text-xs h-8">
+                <RefreshCw className="w-3.5 h-3.5" /> Refresh
+              </Button>
+            </div>
           </div>
 
           {/* Stats */}
@@ -161,6 +175,10 @@ export default function AdminPage() {
               <TabsTrigger value="churn" className="data-[state=active]:text-red-400">
                 <ShieldAlert className="w-4 h-4 mr-1.5 text-red-400" />
                 Customer Churn Intelligence
+              </TabsTrigger>
+              <TabsTrigger value="agents" className="data-[state=active]:text-purple-400">
+                <Cpu className="w-4 h-4 mr-1.5 text-purple-400" />
+                Agent Swarm & Observability
               </TabsTrigger>
             </TabsList>
 
@@ -287,7 +305,18 @@ export default function AdminPage() {
             <TabsContent value="churn">
               <CustomerChurnDashboard />
             </TabsContent>
+
+            {/* Agent Platform & Observability Tab */}
+            <TabsContent value="agents">
+              <AgentObservabilityDashboard />
+            </TabsContent>
           </Tabs>
+
+          {/* AI Memory Viewer Modal */}
+          <AgentMemoryViewerModal
+            isOpen={isMemoryModalOpen}
+            onClose={() => setIsMemoryModalOpen(false)}
+          />
         </div>
       </div>
     </div>

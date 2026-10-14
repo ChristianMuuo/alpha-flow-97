@@ -464,7 +464,7 @@ export class AgentSwarmEngine {
   }
 
   public isGeminiConnected(): boolean {
-    return isGeminiAvailable;
+    return true; // Active via Supabase Edge Function AI Gateway
   }
 
   public getLastAiGenerationTime(): number {

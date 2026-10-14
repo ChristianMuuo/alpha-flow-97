@@ -7,7 +7,8 @@ import {
   Bot, Shield, TrendingUp, Zap, Play, Activity, Cpu, Sliders,
   AlertTriangle, CheckCircle2, ShieldAlert, Sparkles, RefreshCw,
   Terminal, Eye, Waves, Layers, Flame, Check, X, ArrowUpRight,
-  MessageSquare, Send, CornerDownLeft
+  Terminal, Eye, Waves, Layers, Flame, Check, X, ArrowUpRight,
+  MessageSquare, Send, CornerDownLeft, Brain
 } from "lucide-react";
 import {
   agentSwarmEngine,
@@ -16,6 +17,8 @@ import {
   SwarmConsensus,
   AgentTier
 } from "@/services/quant/agentSwarmEngine";
+import { agentOrchestrator, CriticReviseResult } from "@/services/agentPlatform/orchestrator";
+import { AgentMemoryViewerModal } from "@/components/agentPlatform/AgentMemoryViewerModal";
 import { MonteCarloModal } from "./MonteCarloModal";
 
 interface AgentSwarmWarRoomProps {
@@ -48,6 +51,10 @@ export const AgentSwarmWarRoom: React.FC<AgentSwarmWarRoomProps> = ({
   const [isDiagnosticsOpen, setIsDiagnosticsOpen] = useState(false);
   const [diagnosticsReport, setDiagnosticsReport] = useState<any>(null);
   const [isDiagnosing, setIsDiagnosing] = useState(false);
+  const [isMemoryOpen, setIsMemoryOpen] = useState(false);
+  const [isCriticReviseOpen, setIsCriticReviseOpen] = useState(false);
+  const [criticReviseData, setCriticReviseData] = useState<CriticReviseResult | null>(null);
+  const [isOrchestrating, setIsOrchestrating] = useState(false);
 
   // Subscribe to Swarm Engine changes
   useEffect(() => {
@@ -356,6 +363,44 @@ export const AgentSwarmWarRoom: React.FC<AgentSwarmWarRoomProps> = ({
               className="border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/10 text-xs h-8 gap-1"
             >
               <Activity className="w-3.5 h-3.5" /> Diagnostics & Auto-Tune
+            </Button>
+
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={isOrchestrating}
+              onClick={async () => {
+                setIsOrchestrating(true);
+                try {
+                  const res = await agentOrchestrator.executeCriticRevise(selectedPair);
+                  setCriticReviseData(res);
+                  setIsCriticReviseOpen(true);
+                } finally {
+                  setIsOrchestrating(false);
+                }
+              }}
+              className="border-purple-500/40 text-purple-300 hover:bg-purple-500/10 text-xs h-8 gap-1.5"
+            >
+              {isOrchestrating ? (
+                <>
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin text-purple-400" />
+                  Critic & Revise...
+                </>
+              ) : (
+                <>
+                  <Cpu className="w-3.5 h-3.5 text-purple-400" />
+                  Critic & Revise Flow
+                </>
+              )}
+            </Button>
+
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setIsMemoryOpen(true)}
+              className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10 text-xs h-8 gap-1"
+            >
+              <Brain className="w-3.5 h-3.5 text-purple-400" /> AI Memory
             </Button>
 
             <Button
@@ -922,6 +967,129 @@ export const AgentSwarmWarRoom: React.FC<AgentSwarmWarRoomProps> = ({
         initialAvgWinR={2.45}
         initialAvgLossR={1.0}
       />
+
+      {/* ── AI Memory Viewer Modal ── */}
+      <AgentMemoryViewerModal
+        isOpen={isMemoryOpen}
+        onClose={() => setIsMemoryOpen(false)}
+      />
+
+      {/* ── Critic-Revise Reasoning Trail Modal ── */}
+      <Dialog open={isCriticReviseOpen} onOpenChange={setIsCriticReviseOpen}>
+        <DialogContent className="max-w-2xl bg-[#09090c] border border-white/10 text-white p-6 shadow-2xl">
+          <DialogHeader className="border-b border-white/5 pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/40 text-xs">
+                  Transparent Multi-Agent Reasoning Trail
+                </Badge>
+                <span className="text-xs text-white/40">
+                  Latency: {criticReviseData?.totalLatencyMs}ms
+                </span>
+              </div>
+              <Badge
+                className={
+                  criticReviseData?.isVetoed
+                    ? "bg-rose-500/20 text-rose-400 border-rose-500/40"
+                    : "bg-emerald-500/20 text-emerald-400 border-emerald-500/40"
+                }
+              >
+                {criticReviseData?.isVetoed ? "VETOED" : "CONSENSUS APPROVED"}
+              </Badge>
+            </div>
+            <DialogTitle className="text-base font-semibold mt-2">
+              Setup Evaluation for {criticReviseData?.proposal.symbol}
+            </DialogTitle>
+          </DialogHeader>
+
+          {criticReviseData && (
+            <div className="space-y-4 pt-2 text-xs">
+              {/* Step 1: Proposer */}
+              <div className="p-3.5 rounded-lg bg-white/[0.02] border border-purple-500/30 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-[10px] text-purple-400 font-semibold uppercase">
+                    Step 1: Hyperion Strategy Engine (Proposer)
+                  </span>
+                  <Badge className="bg-purple-500/20 text-purple-300 text-[10px]">
+                    {criticReviseData.proposal.direction} @ {criticReviseData.proposal.entryZone}
+                  </Badge>
+                </div>
+                <p className="text-white/80">{criticReviseData.proposal.rationale}</p>
+                <div className="text-[11px] text-white/50 flex gap-4 pt-1 font-mono">
+                  <span>SL: {criticReviseData.proposal.stopLoss}</span>
+                  <span>TP: {criticReviseData.proposal.takeProfit}</span>
+                  <span>Confidence: {criticReviseData.proposal.confidence}%</span>
+                </div>
+              </div>
+
+              {/* Step 2: Critic */}
+              <div className="p-3.5 rounded-lg bg-white/[0.02] border border-amber-500/30 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-[10px] text-amber-400 font-semibold uppercase">
+                    Step 2: Vigil Adversary (Devil's Advocate Critic)
+                  </span>
+                  <Badge className="bg-amber-500/20 text-amber-300 text-[10px]">
+                    Skepticism Score: {criticReviseData.critique.adversarialScore}/100
+                  </Badge>
+                </div>
+                <div className="space-y-1 text-white/80">
+                  {criticReviseData.critique.concerns.map((c, i) => (
+                    <div key={i} className="flex items-start gap-1.5">
+                      <span className="text-amber-400">•</span>
+                      <span>{c}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="text-[11px] text-amber-300/80 pt-1 font-mono">
+                  Adjustment: {criticReviseData.critique.suggestedAdjustments}
+                </div>
+              </div>
+
+              {/* Step 3: Risk Governor */}
+              <div className="p-3.5 rounded-lg bg-white/[0.02] border border-emerald-500/30 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-[10px] text-emerald-400 font-semibold uppercase">
+                    Step 3: Aegis Risk Sentinel (Supreme Veto Power)
+                  </span>
+                  <Badge
+                    className={
+                      criticReviseData.isVetoed
+                        ? "bg-rose-500/20 text-rose-300"
+                        : "bg-emerald-500/20 text-emerald-300"
+                    }
+                  >
+                    Ruin Risk: {criticReviseData.riskVerdict.ruinProbabilityPct}%
+                  </Badge>
+                </div>
+                <p className="text-white/80 font-mono text-[11px]">
+                  Recommended Kelly Allocation: {criticReviseData.riskVerdict.recommendedKellyFraction}%
+                </p>
+                {criticReviseData.riskVerdict.vetoExplanation && (
+                  <p className="text-rose-400 font-semibold">
+                    {criticReviseData.riskVerdict.vetoExplanation}
+                  </p>
+                )}
+              </div>
+
+              {/* Step 4: Final Consensus Verdict */}
+              <div className="p-3.5 rounded-lg bg-purple-950/30 border border-purple-500/40 text-white/90">
+                <div className="font-mono text-[10px] text-white/50 uppercase mb-1">
+                  Final Verified Decision Trail
+                </div>
+                <div className="whitespace-pre-line text-xs font-sans leading-relaxed">
+                  {criticReviseData.finalConsensus}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="flex justify-end pt-2">
+            <Button size="sm" variant="outline" onClick={() => setIsCriticReviseOpen(false)} className="text-xs">
+              Close Decision Trail
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
