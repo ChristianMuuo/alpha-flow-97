@@ -24,8 +24,16 @@ dist-ssr
 *.sw?
 
 .env
+.env.*
+!.env.example
 
-# Build logs and temp files
+# Build logs, scratch files and temp files
 build_*.txt
+build_*.log
+current_files.txt
+books_list.txt
+rename_books.ps1
 vite.config.ts.timestamp*
+bun.lockb
 supabase/.temp/
+.venv/

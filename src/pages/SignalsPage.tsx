@@ -4,14 +4,17 @@ import { Badge } from "@/components/ui/badge";
 import SEO from "@/components/SEO";
 import {
   Radio, Shield, TrendingUp, Star, Filter, Grid, List,
-  CheckCircle, Users, Zap, Play, X, Bot, BarChart3
+  CheckCircle, Users, Zap, Play, X, Bot, BarChart3, Heart, Sparkles
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdvancedRealTimeChart } from "@/components/AdvancedRealTimeChart";
 import { RiskManager } from "@/components/RiskManager";
 import { TradeCopier } from "@/components/TradeCopier";
+import { AlphaMatrixTerminal } from "@/components/quant/AlphaMatrixTerminal";
+import { AlphaMatrixModal } from "@/components/quant/AlphaMatrixModal";
 import { BacktestSimulator, Candle, PriceLevel, DeepModelMetrics } from "@/lib/backtestSimulator";
+import { useWatchlist } from "@/hooks/useWatchlist";
 
 // ── Utility: forex pair → Binance symbol ────────────────────────────
 function toBinance(pair: string): string {
@@ -102,6 +105,8 @@ export default function SignalsPage() {
   const [selectedStyle, setSelectedStyle] = useState("All Styles");
   const [selectedPrice, setSelectedPrice] = useState("All Prices");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [sortBy, setSortBy] = useState("featured");
+  const { savedIds: watchlistIds, toggle: toggleWatchlist } = useWatchlist("signal");
 
   // ── Live prices via Binance REST (refreshed every 5s) ────────────
   const [livePrices, setLivePrices] = useState<Record<string, number>>({});
@@ -136,6 +141,7 @@ export default function SignalsPage() {
     netProfit: 0, initialBalance: 500000, activeTrade: null as any,
     floatingPL: 0, equity: 500000, symbol: "EURUSD",
   });
+  const [isAlphaMatrixModalOpen, setIsAlphaMatrixModalOpen] = useState(false);
   const simulatorRef = useRef<BacktestSimulator | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
 
@@ -244,6 +250,12 @@ export default function SignalsPage() {
     if (selectedPrice === "$100–$200") priceOk = s.price > 100 && s.price <= 200;
     if (selectedPrice === "$200+") priceOk = s.price > 200;
     return styleOk && priceOk;
+  }).sort((a, b) => {
+    if (sortBy === "winrate") return b.winRate - a.winRate;
+    if (sortBy === "subscribers") return b.subscribers - a.subscribers;
+    if (sortBy === "price_asc") return a.price - b.price;
+    if (sortBy === "rating") return b.rating - a.rating;
+    return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
   });
 
   // ── Live price shown in header for active pair ────────────────────
@@ -291,6 +303,18 @@ export default function SignalsPage() {
             ))}
           </div>
 
+          {/* AlphaMatrix Hero Launcher Button */}
+          <div className="flex justify-center mt-6">
+            <Button
+              onClick={() => setIsAlphaMatrixModalOpen(true)}
+              className="bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/25 text-xs font-mono px-4 py-2 rounded-xl gap-2 shadow-lg shadow-emerald-500/10 transition-all"
+            >
+              <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
+              Launch AlphaMatrix™ Multi-Horizon Price Forecaster
+              <Badge className="bg-emerald-500/20 text-emerald-300 text-[10px] ml-1">Quant Confluence</Badge>
+            </Button>
+          </div>
+
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10 max-w-3xl mx-auto">
             {[
@@ -323,6 +347,14 @@ export default function SignalsPage() {
                 {sel.opts.map(o => <option key={o} value={o}>{o}</option>)}
               </select>
             ))}
+            <select value={sortBy} onChange={e => setSortBy(e.target.value)}
+              className="bg-secondary/50 border border-border rounded-lg px-3 py-1.5 text-sm">
+              <option value="featured">⭐ Featured</option>
+              <option value="winrate">Best Win Rate</option>
+              <option value="subscribers">Most Subscribers</option>
+              <option value="price_asc">Lowest Price</option>
+              <option value="rating">Best Rated</option>
+            </select>
           </div>
           <div className="flex items-center gap-2">
             <Button variant={viewMode === "grid" ? "secondary" : "ghost"} size="sm" onClick={() => setViewMode("grid")}><Grid className="w-4 h-4" /></Button>
@@ -409,7 +441,15 @@ export default function SignalsPage() {
                     <span className="text-2xl font-bold">${signal.price}</span>
                     <span className="text-muted-foreground text-sm">/{signal.pricePeriod}</span>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 items-center">
+                    {/* Heart / Watchlist */}
+                    <button
+                      onClick={() => toggleWatchlist(String(signal.id), signal.name, { price: signal.price, style: signal.style })}
+                      title={watchlistIds.has(String(signal.id)) ? "Remove from watchlist" : "Save to watchlist"}
+                      className={`p-1.5 rounded-lg border transition-all ${watchlistIds.has(String(signal.id)) ? 'bg-red-500/20 border-red-500/50 text-red-400' : 'border-border/50 text-muted-foreground hover:border-red-500/30 hover:text-red-400'}`}
+                    >
+                      <Heart className={`w-3.5 h-3.5 ${watchlistIds.has(String(signal.id)) ? 'fill-current' : ''}`} />
+                    </button>
                     {/* Pair selector + Live Backtest button */}
                     <div className="flex rounded-lg overflow-hidden border border-cyan-500/30">
                       {signal.pairs.slice(0, 3).map(pair => (
@@ -488,6 +528,7 @@ export default function SignalsPage() {
             <Tabs defaultValue="chart" className="w-full h-full flex flex-col">
               <TabsList className="w-full justify-start rounded-none border-b border-border/50 bg-transparent h-auto p-0 mb-3 shrink-0">
                 <TabsTrigger value="chart" className="data-[state=active]:bg-secondary/50 rounded-t-lg px-4 py-2 ring-transparent text-sm">📈 Live Chart</TabsTrigger>
+                <TabsTrigger value="alphamatrix" className="data-[state=active]:bg-secondary/50 rounded-t-lg px-4 py-2 ring-transparent text-sm text-emerald-400">🔮 AlphaMatrix™ Forecast</TabsTrigger>
                 <TabsTrigger value="risk" className="data-[state=active]:bg-secondary/50 rounded-t-lg px-4 py-2 ring-transparent text-sm">🛡 Risk Manager</TabsTrigger>
                 <TabsTrigger value="copier" className="data-[state=active]:bg-secondary/50 rounded-t-lg px-4 py-2 ring-transparent text-sm">🔗 Trade Copier</TabsTrigger>
               </TabsList>
@@ -496,6 +537,12 @@ export default function SignalsPage() {
                   candles={candles} currentCandle={currentCandle}
                   volumeProfile={volumeProfile} metrics={simMetrics}
                   deepMetrics={deepMetrics} isActive={isModalOpen} />
+              </TabsContent>
+              <TabsContent value="alphamatrix" className="flex-1 mt-0 outline-none overflow-y-auto">
+                <AlphaMatrixTerminal
+                  initialSymbol={activePair === "XAUUSD" ? "XAU/USD" : activePair === "GBPUSD" ? "GBP/USD" : "EUR/USD"}
+                  initialPrice={headerPrice}
+                />
               </TabsContent>
               <TabsContent value="risk" className="flex-1 mt-0 outline-none overflow-y-auto"><RiskManager /></TabsContent>
               <TabsContent value="copier" className="flex-1 mt-0 outline-none overflow-y-auto"><TradeCopier /></TabsContent>
@@ -524,6 +571,14 @@ export default function SignalsPage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Standalone AlphaMatrix Global Modal */}
+      <AlphaMatrixModal
+        isOpen={isAlphaMatrixModalOpen}
+        onClose={() => setIsAlphaMatrixModalOpen(false)}
+        initialSymbol="EUR/USD"
+        initialPrice={livePrices["EURUSD"]}
+      />
     </div>
   );
 }

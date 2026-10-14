@@ -16,6 +16,11 @@ const AuthPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [referralCode, setReferralCode] = useState(() => {
+    // Pre-fill from URL param ?ref=CODE
+    const params = new URLSearchParams(window.location.search);
+    return params.get('ref') ?? '';
+  });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showResetDialog, setShowResetDialog] = useState(false);
@@ -74,6 +79,13 @@ const AuthPage = () => {
         data: { full_name: fullName }
       }
     });
+
+    // If there's a referral code, save referred_by on the new profile
+    if (!error && data.user && referralCode.trim()) {
+      await supabase.from('profiles').update({
+        referred_by: referralCode.trim().toUpperCase()
+      }).eq('user_id', data.user.id);
+    }
     setLoading(false);
 
     if (error) {
@@ -259,6 +271,17 @@ const AuthPage = () => {
                           {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </button>
                       </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-referral">Referral Code <span className="text-muted-foreground text-xs">(optional)</span></Label>
+                      <Input
+                        id="signup-referral"
+                        type="text"
+                        placeholder="e.g. ABC123"
+                        value={referralCode}
+                        onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+                        className="bg-background/50 border-input hover:border-emerald-500/50 focus:border-emerald-500 transition-colors font-mono uppercase"
+                      />
                     </div>
                     <Button type="submit" className="w-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20" disabled={loading}>
                       {loading ? 'Creating Account...' : 'Create Account'}

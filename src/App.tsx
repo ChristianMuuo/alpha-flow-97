@@ -28,6 +28,12 @@ const LibraryPage = lazy(() => import("./pages/LibraryPage"));
 const ImmersiveReaderPage = lazy(() => import("./pages/ImmersiveReaderPage"));
 const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const JournalPage = lazy(() => import("./pages/JournalPage"));
+const AdminPage = lazy(() => import("./pages/AdminPage"));
+const PricingPage = lazy(() => import("./pages/PricingPage"));
+const OrderflowPage = lazy(() => import("./pages/OrderflowPage"));
+const ArenaPage = lazy(() => import("./pages/ArenaPage"));
+const ChurnPage = lazy(() => import("./pages/ChurnPage"));
 
 const queryClient = new QueryClient();
 
@@ -55,6 +61,12 @@ const App = () => (
                   <Route path="/product/:productId" element={<ProductDetailPage />} />
                   <Route path="/checkout" element={<CheckoutPage />} />
                   <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
+                  <Route path="/journal" element={<JournalPage />} />
+                  <Route path="/orderflow" element={<OrderflowPage />} />
+                  <Route path="/arena" element={<ArenaPage />} />
+                  <Route path="/admin" element={<AdminPage />} />
+                  <Route path="/churn" element={<ChurnPage />} />
+                  <Route path="/pricing" element={<PricingPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>
                 <Route path="/auth" element={<AuthPage />} />

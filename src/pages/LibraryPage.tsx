@@ -11,6 +11,10 @@ import { toast } from "sonner";
 import Loading from "@/components/ui/Loading";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { BookShelf } from "@/components/library/BookShelf";
+import { SessionHUD } from "@/components/SessionHUD";
+import { ChartSimulatorModal } from "@/components/library/ChartSimulatorModal";
+import { StrategyQuizDialog } from "@/components/library/StrategyQuizDialog";
+import { LibraryRagSearch } from "@/components/quant/LibraryRagSearch";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -28,11 +32,11 @@ interface BookData {
 }
 
 const SHELVES = [
-    { title: "The Fundamentals", category: "Psychology" }, // Mapping to existing categories for demo
-    { title: "Mastering Technical Analysis", category: "Technical Analysis" },
     { title: "Smart Money Concepts", category: "Smart Money Concepts" },
+    { title: "Forex & Trading Strategies", category: "Forex & Trading" },
+    { title: "Mastering Technical Analysis", category: "Technical Analysis" },
     { title: "Orderflow Analysis", category: "Orderflow" },
-    { title: "Market Wizards & Interviews", category: "Interviews" },
+    { title: "The Fundamentals & Psychology", category: "Psychology" },
     { title: "All Collection", category: "All" }
 ];
 
@@ -40,17 +44,26 @@ export default function LibraryPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [books, setBooks] = useState<BookData[]>([]);
     const [loading, setLoading] = useState(true);
+    const [simulatorBook, setSimulatorBook] = useState<any>(null);
+    const [quizBook, setQuizBook] = useState<any>(null);
     const navigate = useNavigate();
 
     const fetchBooks = async () => {
         try {
-            // Fetch from Supabase
-            const { data: supabaseData, error } = await supabase
-                .from('books')
-                .select('*')
-                .order('created_at', { ascending: false });
+            let supabaseBooks: BookData[] = [];
+            // Fetch from Supabase safely
+            try {
+                const { data: supabaseData, error } = await supabase
+                    .from('books')
+                    .select('*')
+                    .order('created_at', { ascending: false });
 
-            if (error) throw error;
+                if (!error && supabaseData) {
+                    supabaseBooks = supabaseData;
+                }
+            } catch (supaError) {
+                console.warn('Supabase not reachable, loading local books:', supaError);
+            }
 
             // Fetch local SMC books
             let localBooks: BookData[] = [];
@@ -87,6 +100,23 @@ export default function LibraryPage() {
                 console.error('Error fetching Forex books:', localError);
             }
 
+            // Fetch Telegram books
+            try {
+                const telegramResponse = await fetch('/books/telegram_books.json');
+                if (telegramResponse.ok) {
+                    const telegramData = await telegramResponse.json();
+                    const telegramBooks = telegramData.map((book: any, index: number) => ({
+                        id: `local-telegram-${index}`,
+                        ...book,
+                        created_at: new Date().toISOString(),
+                        downloads: 0
+                    }));
+                    localBooks = [...localBooks, ...telegramBooks];
+                }
+            } catch (localError) {
+                console.error('Error fetching Telegram books:', localError);
+            }
+
             // Fetch Video Courses
             try {
                 const coursesResponse = await fetch('/courses.json');
@@ -106,7 +136,7 @@ export default function LibraryPage() {
             }
 
             // Merge and set books
-            setBooks([...(supabaseData || []), ...localBooks]);
+            setBooks([...supabaseBooks, ...localBooks]);
         } catch (error: any) {
             console.error('Error fetching books:', error);
         } finally {
@@ -117,16 +147,20 @@ export default function LibraryPage() {
     useEffect(() => {
         fetchBooks();
 
-        const channel = supabase
-            .channel('public:books')
-            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'books' }, (payload) => {
-                setBooks((current) => [payload.new as BookData, ...current]);
-            })
-            .subscribe();
+        try {
+            const channel = supabase
+                .channel('public:books')
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'books' }, (payload) => {
+                    setBooks((current) => [payload.new as BookData, ...current]);
+                })
+                .subscribe();
 
-        return () => {
-            supabase.removeChannel(channel);
-        };
+            return () => {
+                supabase.removeChannel(channel);
+            };
+        } catch (e) {
+            console.warn('Realtime subscription not available:', e);
+        }
     }, []);
 
     const filteredBooks = searchQuery.trim()
@@ -231,23 +265,49 @@ export default function LibraryPage() {
                 </div>
             </section>
 
-            {/* Shelves */}
-            <div className="space-y-16 pb-20 container mx-auto px-4">
-                {SHELVES.map((shelf) => {
-                    const shelfBooks = getBooksByCategory(shelf.category);
-                    if (shelf.category !== "All" && shelfBooks.length === 0) return null;
+            {/* Ambient Session HUD & Shelves */}
+            <div className="container mx-auto px-4 space-y-8">
+                <SessionHUD />
 
-                    return (
-                        <BookShelf
-                            key={shelf.title}
-                            title={shelf.title}
-                            books={shelfBooks}
-                            loading={loading}
-                            onBookClick={handleRead}
-                        />
-                    );
-                })}
+                {/* Ask the 95 Books - Institutional Semantic RAG Copilot */}
+                <LibraryRagSearch />
+
+                {/* Shelves */}
+                <div className="space-y-16 pb-20">
+                    {SHELVES.map((shelf) => {
+                        const shelfBooks = getBooksByCategory(shelf.category);
+                        if (shelf.category !== "All" && shelfBooks.length === 0) return null;
+
+                        return (
+                            <BookShelf
+                                key={shelf.title}
+                                title={shelf.title}
+                                books={shelfBooks}
+                                loading={loading}
+                                onBookClick={handleRead}
+                                onSimulate={(b) => setSimulatorBook(b)}
+                                onQuiz={(b) => setQuizBook(b)}
+                            />
+                        );
+                    })}
+                </div>
             </div>
+
+            {/* Strategy Chart Simulator Bridge Modal */}
+            <ChartSimulatorModal
+                isOpen={!!simulatorBook}
+                onClose={() => setSimulatorBook(null)}
+                bookTitle={simulatorBook?.title}
+                category={simulatorBook?.category}
+            />
+
+            {/* Athena Strategy Quiz Modal */}
+            <StrategyQuizDialog
+                isOpen={!!quizBook}
+                onClose={() => setQuizBook(null)}
+                bookTitle={quizBook?.title}
+                category={quizBook?.category}
+            />
         </div>
     );
 }

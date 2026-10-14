@@ -3,8 +3,9 @@ import TradingViewChart from '@/components/TradingViewChart';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { TrendingUp, Globe, Clock } from 'lucide-react';
+import { TrendingUp, Globe, Clock, CalendarDays } from 'lucide-react';
 import SEO from '@/components/SEO';
+import SessionClock from '@/components/SessionClock';
 
 const currencyPairs = {
   major: [
@@ -122,8 +123,8 @@ const MarketsPage = () => {
                         key={pair.symbol}
                         onClick={() => setSelectedPair(pair)}
                         className={`p-4 rounded-lg border transition-all text-left ${selectedPair.symbol === pair.symbol
-                            ? 'border-primary bg-primary/10'
-                            : 'border-border/50 bg-background/50 hover:border-primary/50'
+                          ? 'border-primary bg-primary/10'
+                          : 'border-border/50 bg-background/50 hover:border-primary/50'
                           }`}
                       >
                         <div className="font-semibold">{pair.name}</div>
@@ -137,24 +138,25 @@ const MarketsPage = () => {
           </CardContent>
         </Card>
 
-        {/* Multi-Chart Grid */}
+        {/* Session Clock */}
+        <SessionClock />
+
+        {/* Economic Calendar */}
         <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-6">Quick View - Major Pairs</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {currencyPairs.major.slice(0, 4).map((pair) => (
-              <Card key={pair.symbol} className="border-border/50 bg-card/50 backdrop-blur">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    {pair.name}
-                    <Badge variant="outline" className="text-xs">{pair.description}</Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <TradingViewChart symbol={pair.symbol} height={300} />
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+            <CalendarDays className="w-6 h-6 text-primary" />
+            Economic Calendar
+          </h2>
+          <Card className="border-border/50 bg-card/50 backdrop-blur overflow-hidden">
+            <CardContent className="p-0">
+              <iframe
+                src="https://www.tradinghours.com/markets"
+                title="Economic Calendar"
+                className="w-full h-[500px] border-0 rounded-xl"
+                loading="lazy"
+              />
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

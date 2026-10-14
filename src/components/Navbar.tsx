@@ -2,26 +2,39 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Menu, X, TrendingUp, Bot, BarChart3, BookOpen, Globe, User, LogOut } from "lucide-react";
+import { Search, Menu, X, TrendingUp, Bot, BarChart3, BookOpen, Globe, User, LogOut, Sun, Moon, BookMarked, Flame, Swords, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import CartDrawer from "./CartDrawer";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
+import { AlphaMatrixModal } from "@/components/quant/AlphaMatrixModal";
 
 const navLinks = [
   { href: "/markets", label: "Markets", icon: Globe },
   { href: "/signals", label: "Signals", icon: TrendingUp },
+  { href: "/orderflow", label: "Orderflow", icon: Flame },
+  { href: "/arena", label: "Arena PVP", icon: Swords },
   { href: "/eas", label: "EAs", icon: Bot },
   { href: "/indicators", label: "Indicators", icon: BarChart3 },
   { href: "/leaderboard", label: "Leaderboard", icon: TrendingUp },
   { href: "/blog", label: "Blog", icon: BookOpen },
   { href: "/library", label: "Library", icon: BookOpen },
+  { href: "/journal", label: "Journal", icon: BookMarked },
 ];
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'));
+  const [isAlphaMatrixOpen, setIsAlphaMatrixOpen] = useState(false);
   const navigate = useNavigate();
+
+  const toggleTheme = () => {
+    const dark = !isDark;
+    setIsDark(dark);
+    document.documentElement.classList.toggle('dark', dark);
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -98,6 +111,26 @@ const Navbar = () => {
 
               {/* Cart */}
               <CartDrawer />
+
+              {/* AlphaMatrix Quant Forecaster Button */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsAlphaMatrixOpen(true)}
+                className="hidden xl:flex items-center gap-1.5 h-8 px-2.5 rounded-xl border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-xs font-mono transition-all shadow-sm"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                AlphaMatrix™
+              </Button>
+
+              {/* Theme Toggle */}
+              <button
+                onClick={toggleTheme}
+                title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                className="p-2 rounded-lg hover:bg-secondary/50 transition-colors text-muted-foreground hover:text-foreground"
+              >
+                {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              </button>
 
               {/* CTAs */}
               {user ? (
@@ -193,6 +226,12 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+
+      {/* Global AlphaMatrix Quant Modal */}
+      <AlphaMatrixModal
+        isOpen={isAlphaMatrixOpen}
+        onClose={() => setIsAlphaMatrixOpen(false)}
+      />
     </>
   );
 };
