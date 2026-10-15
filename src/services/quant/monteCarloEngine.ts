@@ -179,5 +179,44 @@ export const monteCarloEngine = {
       simulationPaths,
       distributionHistogram
     };
+  },
+
+  simulate(params: {
+    initialBalance?: number;
+    winRatePct: number;
+    riskRewardRatio: number;
+    riskPerTradePct: number;
+    simulationsCount?: number;
+    tradesPerSim?: number;
+    maxDrawdownHurdlePct?: number;
+  }) {
+    const startBal = params.initialBalance ?? 100000;
+    const numSims = params.simulationsCount ?? 5000;
+    const trades = params.tradesPerSim ?? 100;
+    const res = this.runSimulation({
+      startingBalance: startBal,
+      winRate: params.winRatePct / 100,
+      avgWinR: params.riskRewardRatio,
+      avgLossR: 1.0,
+      riskPerTradePct: params.riskPerTradePct / 100,
+      tradesPerSimulation: trades,
+      numSimulations: numSims,
+      maxTrailingDrawdown: ((params.maxDrawdownHurdlePct ?? 10) / 100) * startBal,
+    });
+
+    const lastPath = res.simulationPaths[res.simulationPaths.length - 1];
+    const medianEndBal = lastPath ? lastPath.p50 : startBal;
+    const medianReturnPct = ((medianEndBal - startBal) / startBal) * 100;
+
+    return {
+      ruinProbability: res.ruinProbability,
+      passProbability: res.passProbability,
+      medianReturnPct,
+      worstCaseDrawdown: res.expectedMaxDrawdownPct,
+      optimalKellyFraction: res.fullKellyFraction,
+      pathsEvaluated: numSims,
+      raw: res,
+    };
   }
 };
+

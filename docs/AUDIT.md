@@ -331,14 +331,14 @@ flowchart LR
 
 ### STAGE 1: Security Hardening, Database Integrity & Repository Clean-Up
 **Objective:** Eliminate critical vulnerabilities, reconcile Supabase schemas, and sanitize the repository.
-- [ ] **1.1 Secret Isolation:** Remove `.env` from Git tracking (`git rm --cached .env`), verify `.gitignore`, and create `.env.example`. Provide instructions for rotating the compromised Gemini key.
-- [ ] **1.2 Package Manager Consolidation:** Standardize on `npm` (`package-lock.json`), remove `bun.lockb`, and verify clean install.
-- [ ] **1.3 Stray File Deletion:** Clean up all `build_*.log`, `build_*.txt`, `current_files.txt`, `books_list.txt`, `rename_books.ps1`, and `vite.config.ts.timestamp-*.mjs`.
-- [ ] **1.4 Database Migration Reconciliation:**
+- [x] **1.1 Secret Isolation:** Remove `.env` from Git tracking (`git rm --cached .env`), verify `.gitignore`, and create `.env.example`. Provide instructions for rotating the compromised Gemini key.
+- [x] **1.2 Package Manager Consolidation:** Standardize on `npm` (`package-lock.json`), remove `bun.lockb`, and verify clean install.
+- [x] **1.3 Stray File Deletion:** Clean up all `build_*.log`, `build_*.txt`, `current_files.txt`, `books_list.txt`, `rename_books.ps1`, and `vite.config.ts.timestamp-*.mjs`.
+- [x] **1.4 Database Migration Reconciliation:**
   - Create a clean Supabase migration unifying `profiles`, `orders`, `books`, `trade_journal`, `watchlist`, `reading_progress`, `book_notes`, `user_streaks`, `agent_runs`, and `agent_traces`.
   - Fix the critical `orders` RLS exploit: Restrict `orders` INSERT/UPDATE to service-role only (executed exclusively via Paystack webhook).
   - Regenerate `src/integrations/supabase/types.ts` to ensure 100% type coverage.
-- [ ] **1.5 Edge Function Gateway:** Set up a secure Supabase Edge Function (`ai-proxy`) to handle all Gemini LLM interactions server-side. Remove `@google/genai` from client-side dependencies.
+- [x] **1.5 Edge Function Gateway:** Set up a secure Supabase Edge Function (`ai-proxy`) to handle all Gemini LLM interactions server-side. Remove `@google/genai` from client-side dependencies.
 - **Verification:** Run `npx tsc --noEmit` and `npm run build`. Verify no secrets exist in client build bundle.
 - **Effort Estimate:** 2 Days (Story Points: 5)
 
@@ -346,12 +346,12 @@ flowchart LR
 
 ### STAGE 2: Core Agent Platform Engine & Typed Infrastructure
 **Objective:** Build a robust, production-grade agent orchestration framework.
-- [ ] **2.1 Typed Tool Registry:** Build an extensible TypeScript tool registry with Zod schemas for inputs, outputs, permissions (`read`, `write`, `execute`), timeouts, and retries.
-- [ ] **2.2 Agent Orchestrator & Dispatcher:** Implement support for sequential, parallel, and "critic-then-revise" execution graphs.
-- [ ] **2.3 Structured Output & Auto-Repair:** Implement strict Zod schema validation on agent outputs with automatic one-shot repair prompts upon validation failures.
-- [ ] **2.4 Memory Engine (pgvector):** Implement short-term (session context) and long-term memory (user trade patterns, preferences) powered by Supabase `pgvector`.
-- [ ] **2.5 Guardrails & Safety Sentinel:** Implement prompt-injection sanitization for user inputs, strict financial advice disclaimers, and per-agent kill switches.
-- [ ] **2.6 Observability & Tracing:** Log all agent runs, latency, token consumption, tool calls, and errors into `agent_runs` and `agent_traces` tables.
+- [x] **2.1 Typed Tool Registry:** Build an extensible TypeScript tool registry with Zod schemas for inputs, outputs, permissions (`read`, `write`, `execute`), timeouts, and retries.
+- [x] **2.2 Agent Orchestrator & Dispatcher:** Implement support for sequential, parallel, and "critic-then-revise" execution graphs.
+- [x] **2.3 Structured Output & Auto-Repair:** Implement strict Zod schema validation on agent outputs with automatic one-shot repair prompts upon validation failures.
+- [x] **2.4 Memory Engine (pgvector):** Implement short-term (session context) and long-term memory (user trade patterns, preferences) powered by Supabase `pgvector`.
+- [x] **2.5 Guardrails & Safety Sentinel:** Implement prompt-injection sanitization for user inputs, strict financial advice disclaimers, and per-agent kill switches.
+- [x] **2.6 Observability & Tracing:** Log all agent runs, latency, token consumption, tool calls, and errors into `agent_runs` and `agent_traces` tables.
 - **Verification:** Unit tests verifying tool dispatch, schema repair, and guardrail blocking.
 - **Effort Estimate:** 3 Days (Story Points: 8)
 
@@ -359,15 +359,15 @@ flowchart LR
 
 ### STAGE 3: Specialist Agent Swarm Deployment
 **Objective:** Implement the 9 specialized agents on top of the Phase 2 platform.
-- [ ] **3.1 Research & Market Intelligence Agent:** Ingests macro calendar, news feeds, and market sentiment; cites sources and flags conflicts.
-- [ ] **3.2 Quantitative Analyst Agent:** Synthesizes price action, volume profile, and orderflow data into probabilistic insights with explicit invalidation levels.
-- [ ] **3.3 Strategy & Signal Generator Agent:** Formulates setups using ML signals with defined Entry, Stop-Loss, and Take-Profit brackets.
-- [ ] **3.4 Risk Manager Agent (Independent Veto Power):** Evaluates portfolio heat, maximum drawdown limits, and position sizing; possesses absolute veto authority over signal proposals.
-- [ ] **3.5 Critic & Reviewer Agent (Adversarial Devil's Advocate):** Scrutinizes setups, challenges assumptions, and checks for confirmation bias before signals reach the user.
-- [ ] **3.6 Journal & Behavioral Coach Agent:** Evaluates trader journal history, detects psychological pitfalls (revenge trading, overtrading), and provides actionable coaching.
-- [ ] **3.7 Embedded UI Copilot Agent:** Context-aware assistant embedded across charts and reader with deep RAG over user data and the 95 trading books.
-- [ ] **3.8 Monitor & Alert Agent:** Evaluates user-defined natural language rules and prioritizes notifications.
-- [ ] **3.9 System Ops Sentinel:** Internal agent monitoring system error rates, API latencies, and token cost thresholds.
+- [x] **3.1 Research & Market Intelligence Agent:** Ingests macro calendar, news feeds, and market sentiment; cites sources and flags conflicts.
+- [x] **3.2 Quantitative Analyst Agent:** Synthesizes price action, volume profile, and orderflow data into probabilistic insights with explicit invalidation levels.
+- [x] **3.3 Strategy & Signal Generator Agent:** Formulates setups using ML signals with defined Entry, Stop-Loss, and Take-Profit brackets.
+- [x] **3.4 Risk Manager Agent (Independent Veto Power):** Evaluates portfolio heat, maximum drawdown limits, and position sizing; possesses absolute veto authority over signal proposals.
+- [x] **3.5 Critic & Reviewer Agent (Adversarial Devil's Advocate):** Scrutinizes setups, challenges assumptions, and checks for confirmation bias before signals reach the user.
+- [x] **3.6 Journal & Behavioral Coach Agent:** Evaluates trader journal history, detects psychological pitfalls (revenge trading, overtrading), and provides actionable coaching.
+- [x] **3.7 Embedded UI Copilot Agent:** Context-aware assistant embedded across charts and reader with deep RAG over user data and the 95 trading books.
+- [x] **3.8 Monitor & Alert Agent:** Evaluates user-defined natural language rules and prioritizes notifications.
+- [x] **3.9 System Ops Sentinel:** Internal agent monitoring system error rates, API latencies, and token cost thresholds.
 - **Verification:** Multi-agent collaboration visible in UI showing proposal, challenge, and approval trail.
 - **Effort Estimate:** 4 Days (Story Points: 13)
 
@@ -375,12 +375,12 @@ flowchart LR
 
 ### STAGE 4: Machine Learning Pipelines & Statistical Feature Store
 **Objective:** Replace naive heuristics with empirically validated ML models.
-- [ ] **4.1 Feature Engineering Pipeline (`/ml`):** Python library computing strictly point-in-time features (realized volatility, ATR, Parkinson volatility, returns, momentum, volume delta, session indicators) with automated lookahead leakage tests.
-- [ ] **4.2 Market Regime Classifier:** Unsupervised Gaussian Mixture Model / Hidden Markov Model (HMM) categorizing market states (Bull Trending, Bear Trending, Mean-Reverting Range, High Volatility Expansion). Export model weights for lightweight TypeScript/Edge inference.
-- [ ] **4.3 Calibrated Directional Signal Model:** Gradient Boosting classifier (LightGBM/XGBoost) trained on walk-forward purged splits with isotonic probability calibration and Brier score evaluation.
-- [ ] **4.4 Volatility & Drawdown Forecaster:** GARCH(1,1) baseline vs. ML-based volatility model driving Kelly-fraction position sizing and dynamic stop placement.
-- [ ] **4.5 Model Interpretability (SHAP):** Precomputed feature attribution explanations converted to natural language in the UI.
-- [ ] **4.6 Model Cards & Monitoring:** Document all models in `/docs/MODEL_CARDS/` with honest out-of-sample metrics against naive baselines.
+- [x] **4.1 Feature Engineering Pipeline (`/ml`):** Python library computing strictly point-in-time features (realized volatility, ATR, Parkinson volatility, returns, momentum, volume delta, session indicators) with automated lookahead leakage tests.
+- [x] **4.2 Market Regime Classifier:** Unsupervised Gaussian Mixture Model / Hidden Markov Model (HMM) categorizing market states (Bull Trending, Bear Trending, Mean-Reverting Range, High Volatility Expansion). Export model weights for lightweight TypeScript/Edge inference.
+- [x] **4.3 Calibrated Directional Signal Model:** Gradient Boosting classifier (LightGBM/XGBoost) trained on walk-forward purged splits with isotonic probability calibration and Brier score evaluation.
+- [x] **4.4 Volatility & Drawdown Forecaster:** GARCH(1,1) baseline vs. ML-based volatility model driving Kelly-fraction position sizing and dynamic stop placement.
+- [x] **4.5 Model Interpretability (SHAP):** Precomputed feature attribution explanations converted to natural language in the UI.
+- [x] **4.6 Model Cards & Monitoring:** Document all models in `/docs/MODEL_CARDS/` with honest out-of-sample metrics against naive baselines.
 - **Verification:** Out-of-sample backtest reports with Sharpe, Sortino, Max Drawdown, and calibration curves.
 - **Effort Estimate:** 4 Days (Story Points: 13)
 
@@ -388,12 +388,12 @@ flowchart LR
 
 ### STAGE 5: Product & UX Upgrade (AI Command Center)
 **Objective:** Deliver an S-tier user experience with full transparency, uncertainty representation, and interactive tooling.
-- [ ] **5.1 AI Command Center Dashboard:** Unified interface displaying active agent consensus, current market regime, active setups, portfolio risk meter, and ops health.
-- [ ] **5.2 Transparent Agent Reasoning UI:** Visual trail displaying the dialog between the Strategy Agent, Critic Agent, and Risk Manager Veto.
-- [ ] **5.3 Transparent Uncertainty & Model Overlays:** Shaded confidence bands, regime background tinting, and SHAP feature drill-downs on charts.
-- [ ] **5.4 Backtesting & Paper Trading Workbench:** Interactive simulator allowing users to test agent strategies against historical data with slippage and commission models.
-- [ ] **5.5 Compliance & Risk Disclosures:** Prominent "Paper/Simulation Mode" indicator and persistent "Not Financial Advice" disclaimers.
-- [ ] **5.6 User Feedback Loop:** Thumbs up/down and "Why was this flagged?" feedback mechanisms storing evaluations in a Supabase feedback table.
+- [x] **5.1 AI Command Center Dashboard:** Unified interface displaying active agent consensus, current market regime, active setups, portfolio risk meter, and ops health.
+- [x] **5.2 Transparent Agent Reasoning UI:** Visual trail displaying the dialog between the Strategy Agent, Critic Agent, and Risk Manager Veto.
+- [x] **5.3 Transparent Uncertainty & Model Overlays:** Shaded confidence bands, regime background tinting, and SHAP feature drill-downs on charts.
+- [x] **5.4 Backtesting & Paper Trading Workbench:** Interactive simulator allowing users to test agent strategies against historical data with slippage and commission models.
+- [x] **5.5 Compliance & Risk Disclosures:** Prominent "Paper/Simulation Mode" indicator and persistent "Not Financial Advice" disclaimers.
+- [x] **5.6 User Feedback Loop:** Thumbs up/down and "Why was this flagged?" feedback mechanisms storing evaluations in a Supabase feedback table.
 - **Verification:** Browser E2E validation of interactive controls, accessibility audit, and responsive mobile testing.
 - **Effort Estimate:** 3 Days (Story Points: 8)
 
@@ -401,10 +401,10 @@ flowchart LR
 
 ### STAGE 6: Authenticated MetaTrader 5 Bridge & Ingestion
 **Objective:** Bridge the web application with `AntiGravityPro.mq5` in a secure, audited architecture.
-- [ ] **6.1 MQL5 WebRequest Client Integration:** Upgrade `AntiGravityPro.mq5` to support optional authenticated HTTPS `WebRequest` polling/postback to the Supabase Edge Gateway.
-- [ ] **6.2 Cryptographic Authentication:** Per-user API tokens with HMAC SHA256 request signing. Zero hardcoded secrets in the EA file.
-- [ ] **6.3 Paper / Simulation Default:** Force simulation mode by default in the EA configuration. Require explicit user opt-in for live order dispatch.
-- [ ] **6.4 Execution Journal Sync:** Transmit executed MT5 trades back to the Supabase `trade_journal` for automated coaching analysis.
+- [x] **6.1 MQL5 WebRequest Client Integration:** Upgrade `AntiGravityPro.mq5` to support optional authenticated HTTPS `WebRequest` polling/postback to the Supabase Edge Gateway.
+- [x] **6.2 Cryptographic Authentication:** Per-user API tokens with HMAC SHA256 request signing. Zero hardcoded secrets in the EA file.
+- [x] **6.3 Paper / Simulation Default:** Force simulation mode by default in the EA configuration. Require explicit user opt-in for live order dispatch.
+- [x] **6.4 Execution Journal Sync:** Transmit executed MT5 trades back to the Supabase `trade_journal` for automated coaching analysis.
 - **Verification:** Local MT5 strategy tester test run sending paper trade telemetry to the staging webhook.
 - **Effort Estimate:** 3 Days (Story Points: 8)
 
@@ -412,10 +412,10 @@ flowchart LR
 
 ### STAGE 7: Quality Assurance, Agent Evals, CI/CD & Governance
 **Objective:** Guarantee long-term maintainability, deterministic builds, and continuous validation.
-- [ ] **7.1 Vitest Unit & Integration Suite:** Implement tests for quant algorithms (Monte Carlo, Kelly sizing, regime formulas) and Zod schema validation.
-- [ ] **7.2 Golden-Set Agent Evals:** Automated evaluation suite testing agent prompts against 50 canonical trading scenarios and adversarial prompt-injection attacks.
-- [ ] **7.3 GitHub Actions CI Pipeline:** Automated workflow running lint, typecheck, unit tests, and build on every Pull Request.
-- [ ] **7.4 Documentation Overhaul:** Comprehensive rewrite of `README.md`, `/docs/ARCHITECTURE.md`, `/docs/AGENTS.md`, and step-by-step developer guides.
+- [x] **7.1 Vitest Unit & Integration Suite:** Implement tests for quant algorithms (Monte Carlo, Kelly sizing, regime formulas) and Zod schema validation.
+- [x] **7.2 Golden-Set Agent Evals:** Automated evaluation suite testing agent prompts against 50 canonical trading scenarios and adversarial prompt-injection attacks.
+- [x] **7.3 GitHub Actions CI Pipeline:** Automated workflow running lint, typecheck, unit tests, and build on every Pull Request.
+- [x] **7.4 Documentation Overhaul:** Comprehensive rewrite of `README.md`, `/docs/ARCHITECTURE.md`, `/docs/AGENTS.md`, and step-by-step developer guides.
 - **Verification:** Green CI pipeline run on GitHub Actions.
 - **Effort Estimate:** 2 Days (Story Points: 5)
 
