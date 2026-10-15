@@ -34,6 +34,7 @@ const PricingPage = lazy(() => import("./pages/PricingPage"));
 const OrderflowPage = lazy(() => import("./pages/OrderflowPage"));
 const ArenaPage = lazy(() => import("./pages/ArenaPage"));
 const ChurnPage = lazy(() => import("./pages/ChurnPage"));
+const AgentsPage = lazy(() => import("./pages/AgentsPage"));
 
 const queryClient = new QueryClient();
 
@@ -66,6 +67,7 @@ const App = () => (
                   <Route path="/arena" element={<ArenaPage />} />
                   <Route path="/admin" element={<AdminPage />} />
                   <Route path="/churn" element={<ChurnPage />} />
+                  <Route path="/agents" element={<AgentsPage />} />
                   <Route path="/pricing" element={<PricingPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Menu, X, TrendingUp, Bot, BarChart3, BookOpen, Globe, User, LogOut, Sun, Moon, BookMarked, Flame, Swords, Sparkles } from "lucide-react";
+import { Search, Menu, X, TrendingUp, Bot, BarChart3, BookOpen, Globe, User, LogOut, Sun, Moon, BookMarked, Flame, Swords, Sparkles, Cpu } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import CartDrawer from "./CartDrawer";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
@@ -13,6 +13,7 @@ const navLinks = [
   { href: "/signals", label: "Signals", icon: TrendingUp },
   { href: "/orderflow", label: "Orderflow", icon: Flame },
   { href: "/arena", label: "Arena PVP", icon: Swords },
+  { href: "/agents", label: "AI Swarm", icon: Cpu },
   { href: "/eas", label: "EAs", icon: Bot },
   { href: "/indicators", label: "Indicators", icon: BarChart3 },
   { href: "/leaderboard", label: "Leaderboard", icon: TrendingUp },
@@ -111,6 +112,18 @@ const Navbar = () => {
 
               {/* Cart */}
               <CartDrawer />
+
+              {/* AI Swarm Hub Button */}
+              <Link to="/agents">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="hidden lg:flex items-center gap-1.5 h-8 px-2.5 rounded-xl border-purple-500/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 text-xs font-mono transition-all shadow-sm"
+                >
+                  <Cpu className="w-3.5 h-3.5 text-purple-400" />
+                  AI Swarm
+                </Button>
+              </Link>
 
               {/* AlphaMatrix Quant Forecaster Button */}
               <Button

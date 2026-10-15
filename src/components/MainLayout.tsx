@@ -3,6 +3,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import MobileBottomNav from "./MobileBottomNav";
 import OnboardingWizard from "./OnboardingWizard";
+import { HumanApprovalDialog } from "./agentPlatform/HumanApprovalDialog";
 
 const MainLayout = () => {
     return (
@@ -14,6 +15,7 @@ const MainLayout = () => {
             <Footer />
             <MobileBottomNav />
             <OnboardingWizard />
+            <HumanApprovalDialog />
         </main>
     );
 };
