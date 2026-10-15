@@ -1,0 +1,9 @@
+{
+  "model_name": "AlphaFlow-GARCH11-v1",
+  "version": "1.0.0",
+  "omega": 4e-06,
+  "alpha": 0.095,
+  "beta": 0.89,
+  "unconditional_variance": 0.00026667,
+  "target_volatility": 0.15
+}

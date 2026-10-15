@@ -1,0 +1,86 @@
+{
+  "model_name": "AlphaFlow-Regime-GMM-v1",
+  "version": "1.0.0",
+  "regimes": [
+    "BULLISH_EXPANSION",
+    "BEARISH_EXPANSION",
+    "CONSOLIDATION_ACCUMULATION",
+    "VOLATILITY_NEWS_SHOCK"
+  ],
+  "centroids": {
+    "BULLISH_EXPANSION": [
+      0.65,
+      0.42,
+      1.45
+    ],
+    "BEARISH_EXPANSION": [
+      -0.68,
+      0.48,
+      -1.52
+    ],
+    "CONSOLIDATION_ACCUMULATION": [
+      0.04,
+      0.22,
+      0.12
+    ],
+    "VOLATILITY_NEWS_SHOCK": [
+      0.15,
+      0.94,
+      -0.28
+    ]
+  },
+  "variances": {
+    "BULLISH_EXPANSION": [
+      0.08,
+      0.04,
+      0.35
+    ],
+    "BEARISH_EXPANSION": [
+      0.08,
+      0.04,
+      0.35
+    ],
+    "CONSOLIDATION_ACCUMULATION": [
+      0.03,
+      0.02,
+      0.18
+    ],
+    "VOLATILITY_NEWS_SHOCK": [
+      0.25,
+      0.08,
+      1.2
+    ]
+  },
+  "priors": {
+    "BULLISH_EXPANSION": 0.28,
+    "BEARISH_EXPANSION": 0.26,
+    "CONSOLIDATION_ACCUMULATION": 0.36,
+    "VOLATILITY_NEWS_SHOCK": 0.1
+  },
+  "transition_matrix": {
+    "BULLISH_EXPANSION": {
+      "BULLISH_EXPANSION": 0.72,
+      "BEARISH_EXPANSION": 0.06,
+      "CONSOLIDATION_ACCUMULATION": 0.17,
+      "VOLATILITY_NEWS_SHOCK": 0.05
+    },
+    "BEARISH_EXPANSION": {
+      "BULLISH_EXPANSION": 0.07,
+      "BEARISH_EXPANSION": 0.7,
+      "CONSOLIDATION_ACCUMULATION": 0.18,
+      "VOLATILITY_NEWS_SHOCK": 0.05
+    },
+    "CONSOLIDATION_ACCUMULATION": {
+      "BULLISH_EXPANSION": 0.2,
+      "BEARISH_EXPANSION": 0.19,
+      "CONSOLIDATION_ACCUMULATION": 0.58,
+      "VOLATILITY_NEWS_SHOCK": 0.03
+    },
+    "VOLATILITY_NEWS_SHOCK": {
+      "BULLISH_EXPANSION": 0.25,
+      "BEARISH_EXPANSION": 0.25,
+      "CONSOLIDATION_ACCUMULATION": 0.35,
+      "VOLATILITY_NEWS_SHOCK": 0.15
+    }
+  }
+}

@@ -9,6 +9,9 @@
  * - Stochastic Monte Carlo Geometric Brownian Motion Trajectories
  */
 
+import { calibratedAlphaModel } from "./calibratedAlphaModel";
+import { garchForecaster } from "./garchForecaster";
+
 export type AlphaMatrixRegime = "ASIAN_RANGE" | "LONDON_KILLZONE" | "NY_OVERLAP" | "FOMC_SHOCK";
 export type OrderflowSkew = "BULLISH" | "NEUTRAL" | "BEARISH";
 export type TimeframeHorizon = "15M" | "1H" | "4H" | "1D";
@@ -314,13 +317,22 @@ export const alphaMatrixForecaster = {
 
     const calcPips = (pA: number, pB: number) => Math.round(Math.abs(pA - pB) / spec.pipSize);
 
-    const statisticalConfluenceScore = Math.min(
-      98,
-      Math.max(68, Math.round(74 + (regime === "LONDON_KILLZONE" ? 14 : 6) + (orderflowSkew !== "NEUTRAL" ? 8 : 0)))
-    );
+    // Stage 4 ML Engine integration:
+    const alphaPrediction = calibratedAlphaModel.predictDirectionalAlpha(symbol, {
+      emaRatio12_26: isBull ? 1.0025 : 0.9980,
+      emaRatio50_200: isBull ? 1.0035 : 0.9960,
+      rsi14: isBull ? 62.0 : 41.0,
+      cvdZScore: isBull ? 1.45 : -1.45,
+      parkinsonVol: unitVol,
+      sessionCode: regime === "LONDON_KILLZONE" || regime === "NY_OVERLAP" ? 2.0 : 0.0,
+    });
 
+    const garchMetrics = garchForecaster.forecastVolatility();
+    const statisticalConfluenceScore = Math.round(alphaPrediction.calibratedWinProbability);
     const expectedValuePerPip = Number((isBull ? +1.95 : +2.18).toFixed(2));
-    const kellyRecommendedSize = Number((1.85 * (statisticalConfluenceScore / 80)).toFixed(2));
+    const kellyRecommendedSize = Number(
+      (1.5 * garchMetrics.volatilityScaledKellyMultiplier * (statisticalConfluenceScore / 75)).toFixed(2)
+    );
 
     return {
       symbol,

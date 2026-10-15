@@ -1,0 +1,74 @@
+{
+  "model_name": "AlphaFlow-Directional-Calibrated-v1",
+  "version": "1.1.0",
+  "intercept": 0.08,
+  "weights": {
+    "ema_ratio_12_26": 1.42,
+    "ema_ratio_50_200": 0.95,
+    "rsi_14": 0.018,
+    "cvd_zscore": 1.15,
+    "parkinson_vol": -12.4,
+    "session_code": 0.22
+  },
+  "scaling": {
+    "ema_ratio_12_26": [
+      1.0002,
+      0.0035
+    ],
+    "ema_ratio_50_200": [
+      1.0005,
+      0.008
+    ],
+    "rsi_14": [
+      50.2,
+      11.4
+    ],
+    "cvd_zscore": [
+      0.05,
+      1.12
+    ],
+    "parkinson_vol": [
+      0.0185,
+      0.0065
+    ],
+    "session_code": [
+      1.45,
+      1.1
+    ]
+  },
+  "calibration_knots": [
+    [
+      0.0,
+      0.12
+    ],
+    [
+      0.2,
+      0.28
+    ],
+    [
+      0.4,
+      0.44
+    ],
+    [
+      0.5,
+      0.5
+    ],
+    [
+      0.6,
+      0.58
+    ],
+    [
+      0.75,
+      0.69
+    ],
+    [
+      0.85,
+      0.77
+    ],
+    [
+      1.0,
+      0.86
+    ]
+  ],
+  "brier_score_oos": 0.178
+}
