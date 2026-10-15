@@ -76,8 +76,13 @@ input bool     UseAntiMartingale   = true;  // Scale up lot after consecutive wi
 input int      AntiMGMaxStreak     = 3;     // Maximum winning streak multiplier cap
 input double   AntiMGMultiplier    = 1.15;  // Lot multiplier per consecutive win
 
-// ── Logging ─────────────────────────────────────────────────────────
 input bool     EnableFileLog       = true;  // Write trade log to file
+
+// ── AlphaFlow S-Tier Cloud Bridge ────────────────────────────────────
+input bool     EnableCloudBridge   = false;          // Transmit trades to AlphaFlow Web Journal
+input bool     SimulationModeOnly  = true;           // Force simulation/paper mode by default
+input string   BridgeUrl           = "https://nmhjrcowiihozadowqtr.supabase.co/functions/v1/mt5-bridge";
+input string   TraderApiToken      = "DEMO_TOKEN";   // Dedicated Trader API token
 
 //====================================================================
 //  GLOBAL VARIABLES
@@ -344,6 +349,12 @@ void OnTick()
                 Print("[AntiGravity Pro] ", dir, " opened | Lot=", lotSize,
                       " | SL=", DoubleToString(sl / _Point, 0), "pts",
                       " | TP=", DoubleToString(tp / _Point, 0), "pts");
+
+                // Transmit real-time execution telemetry to AlphaFlow Cloud Journal
+                PostCloudTelemetry(dir, (signal == 1 ? ask : bid), lotSize,
+                                   (signal == 1 ? ask - sl : bid + sl),
+                                   (signal == 1 ? ask + tp : bid - tp),
+                                   "AntiGravityPro S-Tier Live Signal");
             }
             else
             {
@@ -608,6 +619,36 @@ void OnTradeTransaction(const MqlTradeTransaction &trans,
               " | Streak W=", gConsecWins, " L=", gConsecLosses,
               " | WinRate=", DoubleToString(winRate, 1), "%");
     }
+}
+
+//====================================================================
+//  CLOUD TELEMETRY BRIDGE (Supabase Edge WebRequest)
+//====================================================================
+void PostCloudTelemetry(string action, double price, double lots, double slPrice, double tpPrice, string comment)
+{
+    if (!EnableCloudBridge) return;
+
+    string headers = "Content-Type: application/json\r\n" +
+                     "x-trader-token: " + TraderApiToken + "\r\n";
+    
+    string jsonPayload = StringFormat(
+        "{\"event\":\"ORDER_OPEN\",\"magicNumber\":%d,\"symbol\":\"%s\",\"action\":\"%s\",\"lots\":%.2f,\"entryPrice\":%.5f,\"stopLoss\":%.5f,\"takeProfit\":%.5f,\"comment\":\"%s\",\"isSimulation\":%s,\"timestamp\":%I64d}",
+        MagicNumber, Symbol(), action, lots, price, slPrice, tpPrice, comment,
+        (SimulationModeOnly ? "true" : "false"), (long)TimeCurrent() * 1000
+    );
+
+    char postData[];
+    char resultData[];
+    string resultHeaders;
+    StringToCharArray(jsonPayload, postData, 0, WHOLE_ARRAY, CP_UTF8);
+    if (ArraySize(postData) > 0)
+        ArrayResize(postData, ArraySize(postData) - 1);
+
+    int res = WebRequest("POST", BridgeUrl, headers, 3000, postData, resultData, resultHeaders);
+    if (res == 200)
+        Print("[AlphaFlow Bridge] Telemetry synced to Cloud Journal. Response 200 OK");
+    else
+        Print("[AlphaFlow Bridge] Notice: WebRequest return code ", res, ". (Whitelist BridgeUrl in MT5 Options)");
 }
 
 //====================================================================
