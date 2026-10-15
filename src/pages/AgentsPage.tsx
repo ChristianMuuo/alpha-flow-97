@@ -6,6 +6,7 @@ import { AgentObservabilityDashboard } from "@/components/agentPlatform/AgentObs
 import { AgentSwarmWarRoom } from "@/components/quant/AgentSwarmWarRoom";
 import { AgentMemoryViewerModal } from "@/components/agentPlatform/AgentMemoryViewerModal";
 import { SpecialistSwarmGrid } from "@/components/agentPlatform/SpecialistSwarmGrid";
+import { AICommandCenter } from "@/components/agentPlatform/AICommandCenter";
 import {
   Cpu,
   Activity,
@@ -15,11 +16,12 @@ import {
   Terminal,
   Lock,
   Layers,
+  LayoutDashboard,
 } from "lucide-react";
 import { toast } from "sonner";
 
 export const AgentsPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"specialists" | "observability" | "warroom">("specialists");
+  const [activeTab, setActiveTab] = useState<"command-center" | "specialists" | "observability" | "warroom">("command-center");
   const [isMemoryModalOpen, setIsMemoryModalOpen] = useState(false);
 
   return (
@@ -73,6 +75,20 @@ export const AgentsPage: React.FC = () => {
             <div className="flex items-center bg-black/60 border border-white/10 rounded-xl p-1 font-mono text-xs">
               <Button
                 size="sm"
+                variant={activeTab === "command-center" ? "default" : "ghost"}
+                onClick={() => setActiveTab("command-center")}
+                className={`h-7 px-3 text-xs gap-1.5 ${
+                  activeTab === "command-center"
+                    ? "bg-purple-600 text-white font-bold shadow-md shadow-purple-600/20"
+                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                <LayoutDashboard className="w-3 h-3" />
+                Command Center
+              </Button>
+
+              <Button
+                size="sm"
                 variant={activeTab === "specialists" ? "default" : "ghost"}
                 onClick={() => setActiveTab("specialists")}
                 className={`h-7 px-3 text-xs gap-1.5 ${
@@ -82,7 +98,7 @@ export const AgentsPage: React.FC = () => {
                 }`}
               >
                 <Layers className="w-3 h-3" />
-                Specialist Swarm (9 Nodes)
+                9 Specialist Nodes
               </Button>
 
               <Button
@@ -110,14 +126,18 @@ export const AgentsPage: React.FC = () => {
                 }`}
               >
                 <Zap className="w-3 h-3" />
-                Live Consensus War Room
+                War Room
               </Button>
             </div>
           </div>
         </div>
 
         {/* Tab Content */}
-        {activeTab === "specialists" ? (
+        {activeTab === "command-center" ? (
+          <div className="space-y-6">
+            <AICommandCenter />
+          </div>
+        ) : activeTab === "specialists" ? (
           <div className="space-y-6">
             <SpecialistSwarmGrid />
           </div>
