@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { AgentObservabilityDashboard } from "@/components/agentPlatform/AgentObservabilityDashboard";
 import { AgentSwarmWarRoom } from "@/components/quant/AgentSwarmWarRoom";
 import { AgentMemoryViewerModal } from "@/components/agentPlatform/AgentMemoryViewerModal";
+import { SpecialistSwarmGrid } from "@/components/agentPlatform/SpecialistSwarmGrid";
 import {
   Cpu,
   Activity,
@@ -13,11 +14,12 @@ import {
   Zap,
   Terminal,
   Lock,
+  Layers,
 } from "lucide-react";
 import { toast } from "sonner";
 
 export const AgentsPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"observability" | "warroom">("observability");
+  const [activeTab, setActiveTab] = useState<"specialists" | "observability" | "warroom">("specialists");
   const [isMemoryModalOpen, setIsMemoryModalOpen] = useState(false);
 
   return (
@@ -71,6 +73,20 @@ export const AgentsPage: React.FC = () => {
             <div className="flex items-center bg-black/60 border border-white/10 rounded-xl p-1 font-mono text-xs">
               <Button
                 size="sm"
+                variant={activeTab === "specialists" ? "default" : "ghost"}
+                onClick={() => setActiveTab("specialists")}
+                className={`h-7 px-3 text-xs gap-1.5 ${
+                  activeTab === "specialists"
+                    ? "bg-purple-600 text-white font-bold shadow-md shadow-purple-600/20"
+                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                <Layers className="w-3 h-3" />
+                Specialist Swarm (9 Nodes)
+              </Button>
+
+              <Button
+                size="sm"
                 variant={activeTab === "observability" ? "default" : "ghost"}
                 onClick={() => setActiveTab("observability")}
                 className={`h-7 px-3 text-xs gap-1.5 ${
@@ -101,7 +117,11 @@ export const AgentsPage: React.FC = () => {
         </div>
 
         {/* Tab Content */}
-        {activeTab === "observability" ? (
+        {activeTab === "specialists" ? (
+          <div className="space-y-6">
+            <SpecialistSwarmGrid />
+          </div>
+        ) : activeTab === "observability" ? (
           <div className="space-y-6">
             <AgentObservabilityDashboard />
           </div>

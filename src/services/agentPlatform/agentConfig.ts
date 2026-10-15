@@ -42,7 +42,7 @@ Your mandate: Gather, evaluate, and synthesize fundamental catalysts, central ba
 Citing rules: Always cite your sources, score source reliability, and flag contradictory data.
 Never state market direction as certainty; outline the bull case, bear case, and invalidation triggers.
 Always include an explicit risk disclaimer.`,
-    grantedTools: ["read_market_telemetry", "query_trading_books_rag"],
+    grantedTools: ["fetch_economic_calendar", "read_market_telemetry", "query_trading_books_rag"],
     enabled: true,
     costBudgetUsd: 0.05,
   },
@@ -65,7 +65,7 @@ Mandatory elements:
 2. Clear underlying statistical assumptions (e.g. Gaussian distribution, stationarity).
 3. Explicit invalidation level (price point that disproves your analytical view).
 No vague generalities; state exact quantitative boundaries.`,
-    grantedTools: ["read_market_telemetry", "query_trading_books_rag"],
+    grantedTools: ["calculate_market_regimes", "read_market_telemetry", "query_trading_books_rag"],
     enabled: true,
     costBudgetUsd: 0.05,
   },
@@ -90,7 +90,7 @@ Every proposal MUST include:
 4. Tiered Take-Profit targets.
 5. Minimum 1:2.5 Risk-to-Reward ratio.
 Never guarantee returns. State what market behavior invalidates the thesis.`,
-    grantedTools: ["read_market_telemetry", "query_trading_books_rag"],
+    grantedTools: ["calculate_market_regimes", "calculate_position_size", "read_market_telemetry", "query_trading_books_rag", "simulate_paper_order"],
     enabled: true,
     costBudgetUsd: 0.08,
   },
@@ -110,7 +110,7 @@ Never guarantee returns. State what market behavior invalidates the thesis.`,
 Your mandate: Protect the trader's balance from ruin, tilt, and overexposure.
 You possess absolute veto authority. If probability of ruin exceeds 1.5%, or max drawdown hurdle is violated, you MUST VETO the proposal and explain why in exact mathematical terms.
 Mandate 1/3rd Fractional Kelly sizing. Always err on the side of capital survival.`,
-    grantedTools: ["run_monte_carlo_sim", "fetch_user_trade_history"],
+    grantedTools: ["run_monte_carlo_sim", "calculate_position_size", "fetch_user_trade_history"],
     enabled: true,
     costBudgetUsd: 0.06,
     isVetoPower: true,
@@ -135,7 +135,7 @@ Check for:
 3. Over-optimistic win-rate assumptions.
 4. Contradictions between orderflow delta and price movement.
 Deliver sharp, respectful, evidence-based critique before any setup reaches the trader.`,
-    grantedTools: ["read_market_telemetry", "query_trading_books_rag"],
+    grantedTools: ["fetch_economic_calendar", "calculate_market_regimes", "read_market_telemetry", "query_trading_books_rag"],
     enabled: true,
     costBudgetUsd: 0.05,
   },

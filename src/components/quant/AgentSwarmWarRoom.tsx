@@ -7,7 +7,6 @@ import {
   Bot, Shield, TrendingUp, Zap, Play, Activity, Cpu, Sliders,
   AlertTriangle, CheckCircle2, ShieldAlert, Sparkles, RefreshCw,
   Terminal, Eye, Waves, Layers, Flame, Check, X, ArrowUpRight,
-  Terminal, Eye, Waves, Layers, Flame, Check, X, ArrowUpRight,
   MessageSquare, Send, CornerDownLeft, Brain
 } from "lucide-react";
 import {
